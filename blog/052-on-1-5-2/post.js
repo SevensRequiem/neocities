@@ -1,0 +1,1 @@
+window.BLOG_POSTS[52] = "I rushed this release. I need to change the font, clean up the blog, and clean up other areas. Which I will do eventually! I get mentally-paralyzed often with all my projects!\n\nSoon blogs will have their own page say /blog/44. And the /blog page will just be a catalog of images + titles as links.\n";

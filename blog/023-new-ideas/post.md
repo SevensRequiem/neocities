@@ -1,0 +1,43 @@
+---
+id: 23
+title: "new ideas"
+date: 2023-11-24T03:58:00Z
+tags: []
+author: "requiem.moe"
+hex: "#8080ff"
+quote: "Blaidd Ddrwg"
+image: ""
+---
+
+I want to make an analytics platform purely based on the access + error logs for apache/nginx. And then maybe port it to a public front-end with a JS globe to show where alot of connections come from. There's still the issue of this domain being scanned, I wonder if I can script a sort of honeypot to record bad actor activities and send it to the appropriate data-center(s), as I've noticed most of them come from data-centers, so they are probably commercially available proxies. I have experimented with it in pre-1.4.4 versions, maybe I should experiment with it some more. Annnnd I need to add the ability to add multiple images/links/videos to blog posts/embed them within the text field, as is common with modern software.
+
+Also I hope you all had a happy thanksgiving!
+
+Anyways, this admin menu needs to be fleshed out !!! As you can see in the picture, its very... Feature-less? Then again I did make it in a hurry just so I didn't have to manually make all the files for the blog every time...
+
+Coming in 1.4.6:
+- New Admin Menu!!!!! mane i want data and features out the a**!
+- Blog Chunking
+- Blog Comments!!!!
+- Chat Chunking
+- Gallery Fix
+- Versions
+- Move Audio Player to footer
+- JS Globe under /about
+- Analytic Back End
+- NavJS fix / flesh out
+- Individual Blog Pages by url/id
+- ChatJS fix / bump/lock to bottom of div and or notify on new message (sorta like discord does)
+- MOAR WIRED-IFY 
+- Universal vulgar word + exploit filter for chat and blog comments.
+- not get burned out!
+
+
+Coming in 1.4.7??:
+- FUNCTIONAL STORE!!??
+
+I also need to make this textbox editor for the blog-post a Markdown Editor with a preview!!! I did use a pre-made md editor in the past but never liked it..
+
+
+Short imageboard update:
+It is coming along slowly. I've recently made it so it correctly returns the specified board, and board threads given the url... burn out go away! let me get manic on it like i did here!!!! ugh...

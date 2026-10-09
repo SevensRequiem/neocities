@@ -1,0 +1,12 @@
+---
+id: 36
+title: "1.4.7?"
+date: 2024-04-05T13:43:00Z
+tags: []
+author: "requiem.moe"
+hex: "#004000"
+quote: "with haste!"
+image: ""
+---
+
+Hmmmmm... I think it'd be best to do it in one request and have the server return a json, but I would need to implement ratelimits, or maybe caching so my other sites dont get pinged too fast (possible dos exploit), I dont know TOO much about CSRF tokens, but I wonder if I could limit server requests with them ---- nvm, its a per session thing anyways and creating bot sessions are easily done from client side. Maybe I could do a backend ping on interval and save it to cache/db. sorta like a heartbeat system I guess, that WOULD mitigate any potential dos issues with using queries :P....

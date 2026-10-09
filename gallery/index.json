@@ -1,0 +1,56 @@
+[
+  {
+    "id": 6,
+    "dir": "006-i-need-to-tweak-the-thumbnail-res-compression",
+    "caption": "i need to tweak the thumbnail res & compression",
+    "date": "2026-03-03T16:22:16Z",
+    "tags": [],
+    "image": "image.webp",
+    "thumb": "thumb.webp"
+  },
+  {
+    "id": 5,
+    "dir": "005-ffvii-its-pretty-fun-i-need-to-finish-it-and-the-others",
+    "caption": "FFVII — Its pretty fun, I need to finish it and the others...",
+    "date": "2025-06-16T20:07:50Z",
+    "tags": [],
+    "image": "image.webp",
+    "thumb": "thumb.webp"
+  },
+  {
+    "id": 4,
+    "dir": "004-archives-4-hiking-along-a-river",
+    "caption": "archives #4 — Hiking along a river",
+    "date": "2022-06-12T20:04:28Z",
+    "tags": [],
+    "image": "image.webp",
+    "thumb": "thumb.webp"
+  },
+  {
+    "id": 3,
+    "dir": "003-archives-3-georgia-pretty-architecture",
+    "caption": "archives #3 — Georgia, pretty architecture",
+    "date": "2021-07-24T20:04:09Z",
+    "tags": [],
+    "image": "image.webp",
+    "thumb": "thumb.webp"
+  },
+  {
+    "id": 2,
+    "dir": "002-archives-2-comfy-day-on-top-of-a-hill",
+    "caption": "archives #2 — comfy day on top of a hill",
+    "date": "2018-12-29T20:03:36Z",
+    "tags": [],
+    "image": "image.webp",
+    "thumb": "thumb.webp"
+  },
+  {
+    "id": 1,
+    "dir": "001-archives-1-chill-day",
+    "caption": "archives #1 — chill day",
+    "date": "2018-10-26T20:03:12Z",
+    "tags": [],
+    "image": "image.webp",
+    "thumb": "thumb.webp"
+  }
+]

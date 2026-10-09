@@ -1,0 +1,1 @@
+window.BLOG_POSTS[16] = "theres been alot of progress lately on the backend!!! im really happy with it. the blog system is now FULLY integrated with laravel! hopefully i can start optimization in maybe, 1.4.7?? i dont think cheap phones or laptops could actually handle this version ngl !\n";

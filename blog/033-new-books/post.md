@@ -1,0 +1,18 @@
+---
+id: 33
+title: "New Books"
+date: 2024-03-09T12:21:00Z
+tags: []
+author: "requiem.moe"
+hex: "#c0c0c0"
+quote: "killitwithfire"
+image: ""
+---
+
+Figured I'd actually read about stuff to fill in the blanks... It's not like I just reverse-engineered everything these past 5+ years to code. I've learned alot, sure, but I feel as if there is some knowledge missing, which these should help. Espescially JavaScript, and React, those are some big books! To be fair, most of the backend here was me spending hours on stack-overflow... I remember my first blog... It was a fork of an old old php script using database's, but when I decided to use flat-file/folder design, I had to make my own backend, its just a simple foreach function literally. I'm hoping with the new GoLang backend I'll be able to do so many things.........
+
+# GoLang
+# LUA
+and
+# JavaScript
+Coming soon!

@@ -1,0 +1,12 @@
+---
+id: 12
+title: "version 1.4"
+date: 2023-03-17T19:03:00Z
+tags: []
+author: ""
+hex: ""
+quote: ""
+image: ""
+---
+
+Ok, version 1.4 is coming. Finally. I got the UI theme done, and a new musicplayer atm, now i'm working on the UX side of things because there are alot of broken and buggy things with the blog, discord login, and etc (i made it really janky tbh XD) anyways 1.4 should feature a full blog system framework that will also be available on my github :P

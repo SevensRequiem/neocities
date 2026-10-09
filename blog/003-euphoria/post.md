@@ -1,0 +1,12 @@
+---
+id: 3
+title: "euphoria"
+date: 2022-08-08T06:12:00Z
+tags: ["Mental Health","Life"]
+author: ""
+hex: "#eb3434"
+quote: "Close the world, txen eht nepO"
+image: ""
+---
+
+that feeling... yknow, the one when you make something, esp with coding, is euphoric and addicting... im in love with the backend i coded for this site. def mixed with pride, as its a huge accomplishment, always, given my usual mental state!

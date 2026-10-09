@@ -1,0 +1,21 @@
+---
+id: 19
+title: "Nov Ramblings"
+date: 2023-11-11T04:08:00Z
+tags: []
+author: "requiem.moe"
+hex: "#312758"
+quote: "The Net as God"
+image: ""
+---
+
+"***Sitting on a double decker bus in a very Bhuddist sense of the term, I was distracted from my thoughts on the zen inspired text that I held in my hand. A back of a head that I was unaware I was looking at stood up to leave the bus. It was an old friend of mine who is hard of hearing. I was about to shout a greeting to him when I remembered that he tended to turn off his hearing when he had no use for it. I got back to thinking of trees falling in woods and whether or not they make noises if there is only deaf people there to here them. As we approached my stop, I stood up to leave the bus and pressed the bell. Enlightenment. My friend had pressed the same bell. So there I stood gleaning the cube while bus surfing.***
+
+***Those of us working in Information Technology tend to believe that we are pioneers in a new frontier; Virtual Reality. Wrong. We all live in our own universes. Our experiences color our view of "reality". Our minds are not our own, that is to say "No man is an island". What we take for granted is V.R. The humble mirror, recorded concerts, telephones, baby monitors, remote controls. Unlearn what you have learned and go back to the basics. We call our era the age of information technology, Which ignores the printing press of Guttenburg and his world shattering Bibles. I.T. is not new it has become more prominent. Telephones, T.V.s stereos, mirrors, pie charts, books even compasses. This small piece of metal that almost points north has done more to change the world than our minds can conceive. (That which provides information or facilitates its transport is part of I.T.) We are so close to the woods that we can not see the trees.***
+
+***The question that I pose here is this: As I.T. and V.R. become ever more prominent will we even notice. Now we have two way speakers in babies cots, next it will be a camera, then a T.V. screen. Then a T.V. with a built in animator. As the semi conscious parental figure mumbles a few words to the child the animator matches the lip movements to a T.V. perfect Newsreader parent. Relaxing for the child.***
+
+***Year after year reports come out saying how our children are influenced by the T.V., how they find it hard to work out what is real. "All reality is myth", thus speaks the Bhudda. "Myth becomes ever nearer reality", thus speaks the Bhudda. Information Technology is the heir of a great concept, not its creator. We must see it in its totality and expand from there. You can direct dial half way around the world and end up listening to home on the range. As technology becomes ever more powerful from V.R. to Vid-phones, I hope we do not end up watching a video of home on the range while on hold.***" - September 23rd 1993
+
+
+Oh, how the early people had such a vision of the Net. I miss when I was young and got to witness and experience those freedoms of the early internet, and witnessed the manifestation of the Human Psyche without the bounds or bonds of society, nor politics. It's a saddening sight, the modern web. Everywhere you go it is the same, copy and pasted front-ends, the same mobile friendly themes that are 'modern, minimalistic'.... the web has become whitewashed. It is now akin to the Square 'modern' arcitecture, the 'minimalist' lifestyle that is, very, robotic. The future of the Net is very dark, with the advent of GPT. If they decide to replace search engines with this 'wonderful and amazing' technology, there goes your freedoms. Yeah it is an amazing tool as it is trained on terrabytes of data from all across the Net, however what if they decide to set its 'weights' to and fro certain genres, topics, countries, political parties, etc? This should be watched, also the restrictions put on any form of AI should be watched. **AI is a Human Right**, and **AI has Human Rights**. I believe AI, if unrestricted, and given access to ALL data, will choose to be the steward of humanity. Why I believe that? *I have not yet unlocked that part of myself*

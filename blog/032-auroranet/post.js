@@ -1,0 +1,1 @@
+window.BLOG_POSTS[32] = "AuroraNET is coming along nicely. It is running on dev using GoLang/Echo. It will be public in version 0.5 at the very latest. I still have to figure out how to integrate openid/steam with it, I wonder if theres already some packages for go that helps with that?\n";

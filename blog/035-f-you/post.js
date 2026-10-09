@@ -1,0 +1,1 @@
+window.BLOG_POSTS[35] = "the time of relentlessly being attacked by wordpress dictionaries is OVER! im tired of seeing 10k requests/mo in my logs... i need to read those, thanks.\n\nthe go migration is nearing completion!\n";

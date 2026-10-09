@@ -1,0 +1,14 @@
+---
+id: 53
+title: "1.5.2 v2"
+date: 2025-06-02T12:53:39Z
+tags: []
+author: "requiem.moe"
+hex: "683d9ed3de874c2df237a571"
+quote: "join me"
+image: "image.webp"
+---
+
+haha what a short release 1.5.2 was. it was a cool theme just not really functional. i got the energy to remake it into a modern, clean, sleek theme so here we are! 1.5.2 v2! i hope you enjoy it!
+
+expect regular blog posts and rss is coming!

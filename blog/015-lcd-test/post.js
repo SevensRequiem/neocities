@@ -1,0 +1,1 @@
+window.BLOG_POSTS[15] = "found this old lawfirm book that had this quality lcd in it. im wondering if i can turn it into a PCstatus screen, or maybe even a simple clock/weather thing to sit on my desk :D\n";

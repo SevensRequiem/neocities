@@ -1,0 +1,11 @@
+/*
+!/.gitignore
+!/assets/
+!/*.html
+!/README.md
+!/blog/
+!/gallery/
+!/.github/
+!/poster/
+!/go.mod
+!/LICENSE

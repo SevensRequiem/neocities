@@ -1,0 +1,16 @@
+---
+id: 86
+title: "Ending the year of the Snake; Shedding."
+date: 2026-02-17T04:37:41Z
+tags: ["Mental Health","Life","Update"]
+author: "0x7::Req"
+hex: "#aaffbb"
+quote: "The test of a first-rate intelligence is the ability to hold two opposing ideas in mind at the same time and still retain the ability to function"
+image: "image.webp"
+---
+
+2025 was very odd. I'm still trying to internally articulate it. I believe it has to do in part to my pre-frontal cortex finally maturing & giving me some much needed leverage/clarity over my BPD's impulsivity & reactivity, and at the same time I finally distanced myself from those who would poke at it for fun. I don't fully understand some of these people who do that, as I always viewed it as the actions of a lower-being or that of an ape and nothing befitting of a Human. This is partly why I've been treated differently or ostracized my whole life; A lack of normality or ordinary ways of consciousness. I've observed that people often obsess over sex, money, materialism, status, power, being better than others, but this could very easily be just who I've been forced to be around all my life. No one thinks about thinking, nor meta-physical properties of every day actions, or thinks of the potentiality of everything. And it's not trauma that caused this, as I was at a similar stage before the most traumatic things. I also have a weird "Duality". I do not care for sex, for example, but yet my emotional-side of my brain is very impulsive with it & craves it substantially. This combined with me never learning a proper romantic model, has surely ruined or burned many relationships/situation-ships of mine, that side so desperately craves 24/7. It's annoying. I'm learning to develop a new romantic model for it so it's not so direct or dominance based, given that's what I witnessed/learned in my life. It's amusing how certain people actually increased this side of me un-knowingly, causing me to be even more impulsive / sexual with the next person I encountered, that side liked. I don't actually know where I'm going with this now, yeah I've shed alot of my traumas in the past & I can't predict my future "version" anymore. It's a bit off-putting but I know I'll enjoy the new me. 
+
+Hopefully I'll re-integrate everything into my core / ego & stop being impulsive thanks to the constant years of both passive and active abuse since 2006.
+
+I'll probably post more on different aspects of my "Ego" once I've collected my thoughts some more! I still struggle with severe memory/functional impairment but at least I'm way more coherent!

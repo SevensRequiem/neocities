@@ -1,0 +1,26 @@
+---
+id: 46
+title: "undefined"
+date: 1998-07-06T00:00:00Z
+tags: ["Tech"]
+author: "requiem.moe"
+hex: "aaf"
+quote: ""
+image: ""
+---
+
+I've neglected this site for a while... Again. And as such, it has accumulated some bugs thanks to AI-Slop code. As much as Ai-code has helped me learn, my god is it terrible sometimes. I'll get to fixing this site and adding some really cool features like blog post comments (I've been meaning to do this for a while). I'm just procrastinating because ive been DREADING the migration to MongoDB.....
+
+I love MongoDB over something like MySQL, I love the structure of it DB > Collection > Documents, the indexing is pretty cool too. I use it for the imageboard, and I plan on using it everywhere now that I am comfortable with it.
+
+I'm doing CS50 now, since being self taught by brute forcing code/applications before the advent of ai has only taught me so much and I'm sure there are concepts like ALGORITHMS I'm not quite good at or understand completely. Sure can I make a killer webapp? Yeah. But thats simple. I was humbled during an IBM interview for a web-developer position and I didnt know basic algorithms because I never really made anything with algs! Wew was that stressful but it taught me to not be so confident with it yet. Yet.
+
+Sometimes I wonder if I'm affected by the dunning kruger effect, or if I just have such low confidence in myself that I would think that.
+
+In my free time, I've been sidetracked with yet another app... Global-Bans! A global player ban solution for game servers such as minecraft, source games, and other games via rcon/ban files. Its getting complex and I've only just begun. At least im slowly learning the aspects of Java for the minecraft plugin!
+
+Todays date is 1/15/2025 @ 1:30 AM, since the site is broken for somereason and doesnt want to post the titles or dates It should be datetime := time.Now(), no? At least thats how I remember I set it... Ai probably re-wrote it when I was asking it to debug something I couldnt figure out and I built requiem.moe before checking.... Ughhhhh
+
+Does markdown still work here? No it doesnt. I cant remember why I removed it but that was dumb. Anyways in 1.5.2 markdown will be supported in the blogs AGAIN. I need to add a search function too, though I dont know how that will even work yet. Is it just as simple as querying the database for terms? I would have to rate-limit that though, as DDOS would be an issue. I'm running on HDDS not ssds so their read speed is only so much!!!
+
+Attached is a sneak-peak of what the blog will look like on the new website version!

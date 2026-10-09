@@ -1,0 +1,60 @@
+name: deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - index.html
+      - assets/**
+      - blog/**
+      - gallery/**
+      - .github/workflows/deploy.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  neocities:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+
+      - name: sync to neocities
+        env:
+          NEOCITIES_API_KEY: ${{ secrets.NEOCITIES_API_KEY || vars.NEOCITIES_API_KEY }}
+        run: |
+          set -euo pipefail
+          api=https://neocities.org/api
+          auth="Authorization: Bearer $NEOCITIES_API_KEY"
+
+          curl -fsS -H "$auth" "$api/list" \
+            | jq -r '.files[] | select(.is_directory | not) | "\(.sha1_hash)  \(.path)"' \
+            | sort > "$RUNNER_TEMP/remote"
+          find index.html assets blog gallery -type f -print0 \
+            | xargs -0 sha1sum | sort > "$RUNNER_TEMP/local"
+
+          comm -23 "$RUNNER_TEMP/local" "$RUNNER_TEMP/remote" | cut -c43- > "$RUNNER_TEMP/upload"
+          while mapfile -t -n 20 batch && ((${#batch[@]})); do
+            args=()
+            for f in "${batch[@]}"; do args+=(-F "$f=@$f"); done
+            curl -fsS -o /dev/null -H "$auth" "${args[@]}" "$api/upload"
+            printf 'uploaded %s\n' "${batch[@]}"
+          done < "$RUNNER_TEMP/upload"
+
+          # only prune inside the directories this repo owns; anything else on the site is left alone
+          cut -c43- "$RUNNER_TEMP/local" | sort > "$RUNNER_TEMP/local-paths"
+          cut -c43- "$RUNNER_TEMP/remote" | { grep -E '^(assets|blog|gallery)/' || true; } \
+            | sort | comm -23 - "$RUNNER_TEMP/local-paths" > "$RUNNER_TEMP/delete"
+          while mapfile -t -n 50 batch && ((${#batch[@]})); do
+            args=()
+            for f in "${batch[@]}"; do args+=(--data-urlencode "filenames[]=$f"); done
+            curl -fsS -o /dev/null -H "$auth" "${args[@]}" "$api/delete"
+            printf 'deleted %s\n' "${batch[@]}"
+          done < "$RUNNER_TEMP/delete"
