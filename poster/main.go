@@ -6,7 +6,7 @@ import (
 	"context"
 	"crypto/rand"
 	"crypto/subtle"
-	_ "embed"
+	"embed"
 	"encoding/binary"
 	"encoding/hex"
 	"encoding/json"
@@ -31,6 +31,9 @@ import (
 
 //go:embed ui.html
 var uiHTML string
+
+//go:embed ui.css ui.js
+var uiFiles embed.FS
 
 var (
 	slugRe   = regexp.MustCompile(`[^a-z0-9]+`)
@@ -97,6 +100,8 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.Handle("GET /assets/", http.FileServer(http.Dir(".")))
+	mux.Handle("GET /ui.css", http.FileServerFS(uiFiles))
+	mux.Handle("GET /ui.js", http.FileServerFS(uiFiles))
 	// The site fetches its indexes, which browsers refuse on file://, so the
 	// poster also serves the deployable paths for local viewing.
 	site := http.StripPrefix("/site", http.FileServer(http.Dir(".")))
@@ -111,10 +116,7 @@ func main() {
 			http.Error(w, "forbidden", http.StatusForbidden)
 			return
 		}
-		nonce := make([]byte, 16)
-		_, _ = rand.Read(nonce)
-		n := hex.EncodeToString(nonce)
-		w.Header().Set("Content-Security-Policy", "default-src 'self'; img-src 'self' blob:; style-src 'nonce-"+n+"'; script-src 'self' 'nonce-"+n+"'")
+		w.Header().Set("Content-Security-Policy", "default-src 'self'; img-src 'self' blob:")
 		w.Header().Set("Cache-Control", "no-store")
 		raw, err := os.ReadFile("blog/index.json")
 		if err != nil {
@@ -135,7 +137,8 @@ func main() {
 		tags := slices.SortedFunc(maps.Keys(uses), func(a, b string) int {
 			return cmp.Or(cmp.Compare(uses[b], uses[a]), cmp.Compare(a, b))
 		})
-		if err := page.Execute(w, map[string]any{"Token": token, "Nonce": n, "Tags": tags}); err != nil {
+		tagJSON, _ := json.Marshal(tags)
+		if err := page.Execute(w, map[string]any{"Token": token, "Tags": string(tagJSON)}); err != nil {
 			slog.Error("render ui", "err", err)
 		}
 	})
@@ -209,15 +212,17 @@ func postBlog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	md := fmt.Sprintf("---\nid: %d\ntitle: %s\ndate: %s\ntags: %s\nauthor: %s\nhex: %q\nquote: %s\nimage: %s\n---\n\n%s\n",
-		id, encode(title), entry.Date, encode(entry.Tags), encode(strings.TrimSpace(r.FormValue("author"))),
-		postHex(now), encode(strings.TrimSpace(r.FormValue("quote"))), encode(entry.Image), body)
-	js := fmt.Sprintf("window.BLOG_POSTS[%d] = %s;\n", id, encode(body+"\n"))
-
-	err = errors.Join(
-		os.WriteFile(filepath.Join(dir, "post.md"), []byte(md), 0o644),
-		os.WriteFile(filepath.Join(dir, "post.js"), []byte(js), 0o644),
-	)
+	err = writeJSON(filepath.Join(dir, "post.json"), struct {
+		ID     int      `json:"id"`
+		Title  string   `json:"title"`
+		Date   string   `json:"date"`
+		Tags   []string `json:"tags"`
+		Author string   `json:"author"`
+		Hex    string   `json:"hex"`
+		Quote  string   `json:"quote"`
+		Image  string   `json:"image"`
+		Body   string   `json:"body"`
+	}{id, title, entry.Date, entry.Tags, strings.TrimSpace(r.FormValue("author")), postHex(now), strings.TrimSpace(r.FormValue("quote")), entry.Image, body})
 	if err == nil {
 		err = writeIndex("blog/index.json", index, entry)
 	}
@@ -272,9 +277,15 @@ func postGallery(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	md := fmt.Sprintf("---\nid: %d\ncaption: %s\ndate: %s\ntags: %s\nhex: %q\nimage: \"image.webp\"\nthumb: \"thumb.webp\"\n---\n",
-		id, encode(caption), entry.Date, encode(entry.Tags), postHex(now))
-	err = os.WriteFile(filepath.Join(dir, "post.md"), []byte(md), 0o644)
+	err = writeJSON(filepath.Join(dir, "post.json"), struct {
+		ID      int      `json:"id"`
+		Caption string   `json:"caption"`
+		Date    string   `json:"date"`
+		Tags    []string `json:"tags"`
+		Hex     string   `json:"hex"`
+		Image   string   `json:"image"`
+		Thumb   string   `json:"thumb"`
+	}{id, caption, entry.Date, entry.Tags, postHex(now), entry.Image, entry.Thumb})
 	if err == nil {
 		err = writeIndex("gallery/index.json", index, entry)
 	}
@@ -330,11 +341,21 @@ func readIndex(path string) ([]json.RawMessage, int, error) {
 }
 
 func writeIndex(path string, entries []json.RawMessage, entry any) error {
+	all := []any{entry}
+	for _, e := range entries {
+		all = append(all, e)
+	}
+	return writeJSON(path, all)
+}
+
+// writeJSON skips HTML escaping so &, < and > stay readable in the index and
+// post files.
+func writeJSON(path string, v any) error {
 	var buf bytes.Buffer
 	enc := json.NewEncoder(&buf)
 	enc.SetEscapeHTML(false)
 	enc.SetIndent("", "  ")
-	if err := enc.Encode(append([]json.RawMessage{json.RawMessage(encode(entry))}, entries...)); err != nil {
+	if err := enc.Encode(v); err != nil {
 		return err
 	}
 	tmp := path + ".tmp"
@@ -342,16 +363,6 @@ func writeIndex(path string, entries []json.RawMessage, entry any) error {
 		return err
 	}
 	return os.Rename(tmp, path)
-}
-
-// encode is json.Marshal without HTML escaping, so &, < and > stay readable
-// in the index and post files.
-func encode(v any) string {
-	var buf bytes.Buffer
-	enc := json.NewEncoder(&buf)
-	enc.SetEscapeHTML(false)
-	_ = enc.Encode(v)
-	return strings.TrimSuffix(buf.String(), "\n")
 }
 
 func dirName(id int, title string) string {

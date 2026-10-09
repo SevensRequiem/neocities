@@ -1,1 +1,0 @@
-window.BLOG_POSTS[42] = "It's been awhile since I updated the blog. The imageboard is coming along! It should only be a week or two before its live :p, hopefully it gets to be really active because that would be pretty cool tbh.\n\nStill burned out...\n";

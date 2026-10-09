@@ -1,1 +1,0 @@
-window.BLOG_POSTS[53] = "haha what a short release 1.5.2 was. it was a cool theme just not really functional. i got the energy to remake it into a modern, clean, sleek theme so here we are! 1.5.2 v2! i hope you enjoy it!\n\nexpect regular blog posts and rss is coming!\n";

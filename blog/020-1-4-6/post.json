@@ -1,0 +1,11 @@
+{
+  "id": 20,
+  "title": "1.4.6",
+  "date": "2023-11-12T20:52:00Z",
+  "tags": [],
+  "author": "requiem.moe",
+  "hex": "#0080c0",
+  "quote": "frens",
+  "image": "image.webp",
+  "body": "I gotta figure out how to load chat/blog posts in chunks instead of all at once. I don't want to lag ppls networks by loading everything at once; however I do want to preload each page, and preload the blog page after home is loaded for ease of access.\n\nThe blog isnt in a DB though so it will be a bit tricky, or well, non standard :3"
+}

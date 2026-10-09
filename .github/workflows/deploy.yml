@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - index.html
+      - robots.txt
+      - sitemap.xml
       - assets/**
       - blog/**
       - gallery/**
@@ -37,7 +39,7 @@ jobs:
           curl -fsS -H "$auth" "$api/list" \
             | jq -r '.files[] | select(.is_directory | not) | "\(.sha1_hash)  \(.path)"' \
             | sort > "$RUNNER_TEMP/remote"
-          find index.html assets blog gallery -type f -print0 \
+          find index.html robots.txt sitemap.xml assets blog gallery -type f -print0 \
             | xargs -0 sha1sum | sort > "$RUNNER_TEMP/local"
 
           comm -23 "$RUNNER_TEMP/local" "$RUNNER_TEMP/remote" | cut -c43- > "$RUNNER_TEMP/upload"

@@ -1,0 +1,11 @@
+{
+  "id": 82,
+  "title": "Site Updates!",
+  "date": "2025-09-03T11:56:08Z",
+  "tags": [],
+  "author": "requiem",
+  "hex": "68b82cd8b1e4617e1104d291",
+  "quote": "The Best is yet to Come!",
+  "image": "image.webp",
+  "body": "it's been a while since i've made a tech post, i believe. at least one that was directly technical and had no mental/personal drama mixed in! i need to finish the blog category system, its... lacking. right now i only have a simple json string for tags, and i manually input \"Tag1, Tag2, Tag3\" on the admin page, as a raw string... that is redundant and hastily made! i need to have a struct, say:\ntype Tag struct {\n  Tech bool\n  Mental bool\n  Personal bool\n  Business bool\n  Occult bool\n  Programming bool\n  NSFW / PTSD bool\n}\nand either dynamically set them with AI, or manually on the admin page... so many improvements need to be made...\ntodo:\n- category rework\n- v1.6 + new theme\n- fix markdown for blog posts and comments\n- clean up blog posts and comments\n- finish the new achan theme\n- integrate discord notifs for moderation\n- remove visitor log spam (its at like 150k documents in the database.... 10+ documents per connection with alot of info....) its redundant\n- rss feed + home page news?\n- automatic backup of chat + blog\n- automatic writing of neocities port?\n- add images to x/twitter posts, maybe AI commentary on what the post is"
+}

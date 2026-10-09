@@ -1,9 +1,0 @@
----
-id: 6
-caption: "i need to tweak the thumbnail res & compression"
-date: 2026-03-03T16:22:16Z
-tags: []
-hex: "69a70ab88bfb60c44afe543e"
-image: "image.webp"
-thumb: "thumb.webp"
----

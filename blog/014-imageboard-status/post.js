@@ -1,1 +1,0 @@
-window.BLOG_POSTS[14] = "for those of you who liked the imageboard, it is down right now as I make a new one from the ground up. its going to be blade based instead of twig and honestly will have way more features, customization, and functionality than vichan does :pp so stay tuned or follow/watch my github.\n";

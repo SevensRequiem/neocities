@@ -1,0 +1,11 @@
+{
+  "id": 16,
+  "title": "1.4.5 progress!",
+  "date": "2023-09-24T18:18:00Z",
+  "tags": [],
+  "author": "requiem.moe",
+  "hex": "#31cec7",
+  "quote": "1998 PIONEER LDC",
+  "image": "",
+  "body": "theres been alot of progress lately on the backend!!! im really happy with it. the blog system is now FULLY integrated with laravel! hopefully i can start optimization in maybe, 1.4.7?? i dont think cheap phones or laptops could actually handle this version ngl !"
+}

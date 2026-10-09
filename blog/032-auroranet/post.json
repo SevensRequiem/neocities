@@ -1,0 +1,11 @@
+{
+  "id": 32,
+  "title": "AuroraNET",
+  "date": "2024-03-09T12:15:00Z",
+  "tags": [],
+  "author": "requiem.moe",
+  "hex": "#ff8000",
+  "quote": "anet",
+  "image": "",
+  "body": "AuroraNET is coming along nicely. It is running on dev using GoLang/Echo. It will be public in version 0.5 at the very latest. I still have to figure out how to integrate openid/steam with it, I wonder if theres already some packages for go that helps with that?"
+}

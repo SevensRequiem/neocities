@@ -1,1 +1,0 @@
-window.BLOG_POSTS[20] = "I gotta figure out how to load chat/blog posts in chunks instead of all at once. I don't want to lag ppls networks by loading everything at once; however I do want to preload each page, and preload the blog page after home is loaded for ease of access.\n\nThe blog isnt in a DB though so it will be a bit tricky, or well, non standard :3\n";

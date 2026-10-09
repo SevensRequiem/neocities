@@ -1,1 +1,0 @@
-window.BLOG_POSTS[40] = "Life seems to be looking up. I think I finally cut out the last of the toxic people from my life, even if they were 'family' or supposed 'best friends', and it has me feeling a lot better mentally, and even physically. Haha, I'm still depressed but I'm learning to be happy again.\n";

@@ -1,0 +1,13 @@
+{
+  "id": 6,
+  "title": "moved from db",
+  "date": "2022-08-15T03:18:00Z",
+  "tags": [
+    "Tech"
+  ],
+  "author": "",
+  "hex": "#fcba03",
+  "quote": "some quote",
+  "image": "",
+  "body": "ah, i have finally made the blog system non-db dependant, and also it ***supports markdown***!\n# H1\n## H2\n### H3\n**bold text**\n*italicized text*\n# ahh another bug :D\nimg elements still showing, even tho there is no src T_T\nahhh it will be a simple fix, such as:\n```\n if ($row['article_image'] == NULL){\n\t\t\t\techo 'posts without images';\n        } else {\n      echo 'posts with images';\n```\nwell, thats how i did it with the DB. maybe, `$json['image']; == NULL` would work instead. idk, thats something for tomorrow me. i am dog ass tired"
+}

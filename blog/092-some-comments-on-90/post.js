@@ -1,1 +1,0 @@
-window.BLOG_POSTS[92] = "i HAVE felt a strong pull towards certain archetypes, that is true, all my life. including okabe, c.c, rei ayanami, and others.\nmaybe something within a mix of those characters is close to a \"me\"? it's worth introspecting on at least! \n\n*why do i have to be so conflicting, even to myself?*\n";
