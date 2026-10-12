@@ -194,13 +194,6 @@ main {
   text-shadow: 0 0 5px rgba(255, 201, 140, 0.4);
 }
 
-.link-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
 .panel-link {
   display: flex;
   align-items: center;
@@ -764,6 +757,7 @@ button.panel-link {
 
 .tab-bar {
   display: flex;
+  align-items: flex-end;
   gap: 6px;
 }
 
@@ -948,10 +942,20 @@ button.panel-link {
   100% { color: rgba(255, 120, 160, 0.85); }
 }
 
+.uplink-panel {
+  border-left-color: var(--accent-cyan);
+}
+
 .uplink-list {
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.uplink-separator {
+  margin: 6px 0;
+  border: 0;
+  border-top: 1px dashed var(--border-bright);
 }
 
 .uplink {
@@ -963,6 +967,7 @@ button.panel-link {
   padding: 8px 12px 8px 10px;
   overflow: hidden;
   text-decoration: none;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--uplink) 24%, transparent), var(--bg-card) 70%);
   border: 1px solid color-mix(in srgb, var(--uplink) 55%, transparent);
   border-left-width: 4px;
   transition:
@@ -986,6 +991,25 @@ button.panel-link {
   filter: drop-shadow(0 0 6px color-mix(in srgb, var(--uplink) 70%, transparent));
 }
 
+.uplink-support {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.uplink-support .uplink {
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 6px;
+  min-width: 0;
+  min-height: 50px;
+  padding: 8px 6px;
+}
+
+.uplink-support img {
+  width: 24px;
+  height: 24px;
+}
+
 .uplink-text {
   display: flex;
   flex-direction: column;
@@ -1006,6 +1030,22 @@ button.panel-link {
   line-height: 1.4;
   letter-spacing: 0.06em;
   color: var(--text-dim);
+}
+
+.uplink-github {
+  --uplink: var(--accent-lavender);
+}
+
+.uplink-youtube {
+  --uplink: var(--lcd-rose);
+}
+
+.uplink-steam {
+  --uplink: var(--lcd-cyan);
+}
+
+.uplink-x {
+  --uplink: var(--text-bright);
 }
 
 .uplink-discord {
@@ -1041,12 +1081,8 @@ button.panel-link {
     linear-gradient(90deg, rgba(255, 110, 84, 0.3) 0%, rgba(40, 12, 16, 0.7) 75%);
 }
 
-.uplink-heart {
-  font-size: 13px;
-  line-height: 1;
-  color: var(--uplink);
-  text-shadow: 0 0 8px var(--uplink);
-  animation: uplink-pulse 1.4s ease-in-out infinite;
+.uplink-paypal {
+  --uplink: var(--lcd-cyan);
 }
 
 @keyframes uplink-sheen {
@@ -1188,6 +1224,21 @@ button.panel-link {
   border-top: 1px dashed rgba(170, 170, 255, 0.18);
 }
 
+.weblog-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 20px;
+}
+
+.weblog-tools .pager {
+  flex: 1 1 260px;
+}
+
+.blog-export {
+  margin-left: auto;
+}
+
 .pager {
   display: flex;
   align-items: center;
@@ -1229,11 +1280,11 @@ button.panel-link {
 .pager-input {
   width: 5ch;
   padding: 2px 4px;
+  text-align: center;
   font-family: inherit;
   font-size: 10px;
   line-height: 1.6;
   letter-spacing: 0.1em;
-  text-align: center;
   color: var(--text-bright);
   background: var(--bg-darker);
   border: 1px solid var(--border-bright);
@@ -1292,6 +1343,43 @@ button.panel-link {
 
 .webring-card {
   border-left-color: var(--accent-pink);
+}
+
+.webring-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.webring-site {
+  display: block;
+  width: 88px;
+  height: 31px;
+  overflow: hidden;
+  font-size: 9px;
+  line-height: 31px;
+  letter-spacing: 0.04em;
+  text-align: center;
+  white-space: nowrap;
+  color: var(--text-dim);
+  background: var(--bg-darker);
+  box-shadow: 0 0 0 1px var(--border);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.webring-site:hover,
+.webring-site:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 1px var(--border-bright), 0 0 10px var(--shadow-glow);
+  outline: none;
+}
+
+.webring-site img {
+  display: block;
+  width: 88px;
+  height: 31px;
 }
 
 .repo-list {
@@ -1387,8 +1475,7 @@ button.panel-link {
   .ring-track,
   .ring-track span,
   .uplink-discord::after,
-  .uplink-live,
-  .uplink-heart {
+  .uplink-live {
     animation: none;
   }
 

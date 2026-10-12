@@ -77,55 +77,68 @@
           <span class="flag-subtext">wandering cyberspace</span>
         </div>
 
-        <article class="entry-card">
-          <header class="entry-head">
-            <h1 class="panel-title">::ABOUT</h1>
-            <span class="entry-tag">self-taught dev</span>
-          </header>
-          <div class="entry-content">
-            <p class="entry-para">
-              I'm just a self-taught dev who loves the <span class="entry-mark">soul of the machine</span>. I'm really focusing on my projects &amp; <span class="entry-mark-teal">healing</span>.
-            </p>
-          </div>
-        </article>
-
-        <aside class="info-panel" aria-label="info and links">
+        <aside class="info-panel" aria-label="about">
           <section class="panel-section">
-            <h2 class="panel-title">::INFO</h2>
-            <dl class="info-list">
-              <dt>handle</dt>
-              <dd>requiem</dd>
-              <dt>status</dt>
-              <dd class="info-status">growing</dd>
-              <dt>contact</dt>
-              <dd><a href="mailto:admin@requiem.moe" class="info-mail">admin@requiem.moe</a></dd>
-            </dl>
+            <header class="entry-head">
+              <h1 class="panel-title">::ABOUT</h1>
+              <span class="entry-tag">self-taught dev</span>
+            </header>
+            <div class="entry-content">
+              <p class="entry-para">
+                I'm just a self-taught dev who loves the <span class="entry-mark">soul of the machine</span>. I'm really focusing on my projects &amp; <span class="entry-mark-teal">healing</span>.
+              </p>
+              <dl class="info-list">
+                <dt>handle</dt>
+                <dd>requiem</dd>
+                <dt>status</dt>
+                <dd class="info-status">growing</dd>
+                <dt>contact</dt>
+                <dd><a href="mailto:admin@requiem.moe" class="info-mail">admin@requiem.moe</a></dd>
+              </dl>
+            </div>
           </section>
+        </aside>
 
-          <nav class="panel-section" aria-label="links">
-            <h2 class="panel-title">::LINKS</h2>
-            <ul class="link-list">
-              <li><a href="https://github.com/SevensRequiem" target="_blank" rel="noopener noreferrer" class="panel-link">github</a></li>
-              <li><a href="https://www.youtube.com/@SevensRequiem" target="_blank" rel="noopener noreferrer" class="panel-link">youtube</a></li>
-              <li><a href="https://steamcommunity.com/id/SevensRequiem" target="_blank" rel="noopener noreferrer" class="panel-link">steam</a></li>
-            </ul>
-          </nav>
-
-          <section class="panel-section">
+        <aside class="info-panel uplink-panel" aria-label="links">
+          <nav class="panel-section" aria-label="uplinks">
             <h2 class="panel-title">::UPLINK</h2>
-            <div class="uplink-list">
+            <div class="uplink-list" role="group" aria-label="personal profiles">
+              <a href="https://github.com/SevensRequiem" target="_blank" rel="noopener noreferrer" class="uplink uplink-github">
+                <img src="./assets/icons/github.png" alt="" />
+                <span class="uplink-text"><span class="uplink-name">github</span><span class="uplink-sub">browse the code</span></span>
+              </a>
+              <a href="https://www.youtube.com/@SevensRequiem" target="_blank" rel="noopener noreferrer" class="uplink uplink-youtube">
+                <img src="./assets/icons/youtube_small.png" alt="" />
+                <span class="uplink-text"><span class="uplink-name">youtube</span><span class="uplink-sub">watch the channel</span></span>
+              </a>
+              <a href="https://steamcommunity.com/id/SevensRequiem" target="_blank" rel="noopener noreferrer" class="uplink uplink-steam">
+                <img src="./assets/icons/steam.png" alt="" />
+                <span class="uplink-text"><span class="uplink-name">steam</span><span class="uplink-sub">view my profile</span></span>
+              </a>
+              <a href="https://x.com/SevensRequiem" target="_blank" rel="noopener noreferrer" class="uplink uplink-x">
+                <img src="./assets/icons/x.png" alt="" />
+                <span class="uplink-text"><span class="uplink-name">x</span><span class="uplink-sub">follow the feed</span></span>
+              </a>
+            </div>
+            <hr class="uplink-separator" />
+            <div class="uplink-list" role="group" aria-label="community and support">
               <a href="https://discord.gg/smEZfvE9Mg" target="_blank" rel="noopener noreferrer" class="uplink uplink-discord">
                 <img src="./assets/icons/discord.png" alt="" />
                 <span class="uplink-text"><span class="uplink-name">discord</span><span class="uplink-sub">join the server</span></span>
                 <span class="uplink-live"></span>
               </a>
-              <a href="https://www.patreon.com/cw/Anima_Online" target="_blank" rel="noopener noreferrer" class="uplink uplink-patreon">
-                <img src="./assets/icons/patreon.png" alt="" />
-                <span class="uplink-text"><span class="uplink-name">patreon</span><span class="uplink-sub">fuel the machine</span></span>
-                <span class="uplink-heart">&#9829;</span>
-              </a>
+              <div class="uplink-support">
+                <a href="https://www.patreon.com/cw/Anima_Online" target="_blank" rel="noopener noreferrer" class="uplink uplink-patreon">
+                  <img src="./assets/icons/patreon.png" alt="" />
+                  <span class="uplink-name">patreon</span>
+                </a>
+                <a href="https://www.paypal.com/donate/?hosted_button_id=Q4MRZXLFZ6W9J" target="_blank" rel="noopener noreferrer" class="uplink uplink-paypal">
+                  <img src="./assets/icons/paypal.png" alt="" />
+                  <span class="uplink-name">paypal</span>
+                </a>
+              </div>
             </div>
-          </section>
+          </nav>
         </aside>
 
         <a href="https://arxiv.org/abs/2506.14376" target="_blank" rel="noopener noreferrer" class="side-note">ai directed dev :: &lt;2506.14376&gt;</a>
@@ -187,14 +200,11 @@
         <section class="entry-card webring-card">
           <header class="entry-head">
             <h2 class="panel-title">::WEBRING</h2>
-            <span class="entry-tag">unlinked</span>
+            <span class="entry-tag" id="webring-count"></span>
           </header>
-          <p class="entry-para">coming soon</p>
-          <nav class="pager" aria-label="webring">
-            <a href="#" class="panel-link">prev</a>
-            <a href="#" class="panel-link">random</a>
-            <a href="#" class="panel-link">next</a>
-          </nav>
+          <div class="webring-list" id="webring-list">
+            <span class="entry-tag">receiving...</span>
+          </div>
         </section>
       </aside>
     </main>

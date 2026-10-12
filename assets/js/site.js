@@ -32,8 +32,9 @@
     tabs.forEach(function (t) {
       t.setAttribute('aria-selected', t === tab);
     });
-    document.getElementById('panel-weblog').hidden = tab.id === 'tab-gallery';
-    document.getElementById('panel-gallery').hidden = tab.id !== 'tab-gallery';
+    document.querySelectorAll('.tab-panel').forEach(function (panel) {
+      panel.hidden = panel.id !== tab.getAttribute('aria-controls');
+    });
   }
 
   tabs.forEach(function (tab) {
@@ -125,7 +126,12 @@
     var jump = el('label', 'entry-tag pager-jump', 'page');
     jump.append(picker, '/ ' + pages);
     pager.append(prev, jump, next);
-    weblog.replaceChildren.apply(weblog, [pager].concat(cards));
+    var exportLink = el('a', 'panel-link blog-export', 'blog export json');
+    exportLink.href = './blog/all.json';
+    exportLink.download = 'all.json';
+    var tools = el('div', 'weblog-tools');
+    tools.append(pager, exportLink);
+    weblog.replaceChildren.apply(weblog, [tools].concat(cards));
     postTab.hidden = true;
     selectTab(document.getElementById('tab-weblog'));
   }
@@ -236,6 +242,30 @@
     })
     .catch(function () {
       repoList.replaceChildren(el('li', 'entry-tag', 'signal lost: github is not answering.'));
+    });
+
+  var WEBRING = 'https://raw.githubusercontent.com/SevensRequiem/neocities/main/webring/';
+  var webringList = document.getElementById('webring-list');
+  fetch(WEBRING + 'webring.json')
+    .then(json)
+    .then(function (sites) {
+      document.getElementById('webring-count').textContent =
+        String(sites.length).padStart(2, '0') + ' linked';
+      var items = sites.map(function (site) {
+        var a = link('webring-site', '', site.url);
+        var img = el('img', '');
+        img.src = new URL(site.banner, WEBRING);
+        img.alt = new URL(site.url).hostname;
+        img.width = 88;
+        img.height = 31;
+        img.loading = 'lazy';
+        a.append(img);
+        return a;
+      });
+      webringList.replaceChildren.apply(webringList, items);
+    })
+    .catch(function () {
+      webringList.replaceChildren(el('span', 'entry-tag', 'signal lost: could not load the webring.'));
     });
 
   var lightbox = document.getElementById('lightbox');

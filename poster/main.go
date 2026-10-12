@@ -25,6 +25,7 @@ import (
 	"regexp"
 	"slices"
 	"strings"
+	"sync"
 	"syscall"
 	"time"
 )
@@ -60,6 +61,18 @@ type galleryEntry struct {
 	Thumb   string   `json:"thumb"`
 }
 
+type blogPost struct {
+	ID     int      `json:"id"`
+	Title  string   `json:"title"`
+	Date   string   `json:"date"`
+	Tags   []string `json:"tags"`
+	Author string   `json:"author"`
+	Hex    string   `json:"hex"`
+	Quote  string   `json:"quote"`
+	Image  string   `json:"image"`
+	Body   string   `json:"body"`
+}
+
 func main() {
 	for _, p := range []string{"blog/index.json", "gallery/index.json", "assets/js/marked.min.js"} {
 		if _, err := os.Stat(p); err != nil {
@@ -83,20 +96,7 @@ func main() {
 	token := hex.EncodeToString(secret)
 	page := template.Must(template.New("ui").Parse(uiHTML))
 
-	// A page on any origin can POST to a loopback port, so writes need the
-	// per-run token in a custom header and the Host must be ours (DNS rebinding).
-	guard := func(next http.HandlerFunc) http.HandlerFunc {
-		return func(w http.ResponseWriter, r *http.Request) {
-			if r.Host != host || subtle.ConstantTimeCompare([]byte(r.Header.Get("X-Poster-Token")), []byte(token)) != 1 {
-				http.Error(w, "forbidden", http.StatusForbidden)
-				return
-			}
-			r.Body = http.MaxBytesReader(w, r.Body, 64<<20)
-			ctx, cancel := context.WithTimeout(r.Context(), 2*time.Minute)
-			defer cancel()
-			next(w, r.WithContext(ctx))
-		}
-	}
+	guard := posterGuard(host, token)
 
 	mux := http.NewServeMux()
 	mux.Handle("GET /assets/", http.FileServer(http.Dir(".")))
@@ -164,6 +164,27 @@ func main() {
 	}
 }
 
+func posterGuard(host, token string) func(http.HandlerFunc) http.HandlerFunc {
+	var writes sync.Mutex
+	// A page on any origin can POST to a loopback port, so writes need the
+	// per-run token in a custom header and the Host must be ours (DNS rebinding).
+	return func(next http.HandlerFunc) http.HandlerFunc {
+		return func(w http.ResponseWriter, r *http.Request) {
+			if r.Host != host || subtle.ConstantTimeCompare([]byte(r.Header.Get("X-Poster-Token")), []byte(token)) != 1 {
+				http.Error(w, "forbidden", http.StatusForbidden)
+				return
+			}
+			// Index read-modify-write and git's staging area are shared by both forms.
+			writes.Lock()
+			defer writes.Unlock()
+			r.Body = http.MaxBytesReader(w, r.Body, 64<<20)
+			ctx, cancel := context.WithTimeout(r.Context(), 2*time.Minute)
+			defer cancel()
+			next(w, r.WithContext(ctx))
+		}
+	}
+}
+
 func postBlog(w http.ResponseWriter, r *http.Request) {
 	title := strings.TrimSpace(r.FormValue("title"))
 	body := strings.TrimRight(strings.ReplaceAll(r.FormValue("body"), "\r\n", "\n"), " \t\n")
@@ -175,6 +196,26 @@ func postBlog(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fail(w, "read blog index", err)
 		return
+	}
+	archiveRaw, err := os.ReadFile("blog/all.json")
+	if err != nil {
+		fail(w, "read blog archive", err)
+		return
+	}
+	var archive []json.RawMessage
+	if err := json.Unmarshal(archiveRaw, &archive); err != nil {
+		fail(w, "parse blog archive", err)
+		return
+	}
+	if archive == nil {
+		fail(w, "parse blog archive", errors.New("expected a JSON array"))
+		return
+	}
+	for _, post := range archive {
+		if !bytes.HasPrefix(bytes.TrimSpace(post), []byte("{")) {
+			fail(w, "parse blog archive", errors.New("expected post objects"))
+			return
+		}
 	}
 
 	now := time.Now().UTC()
@@ -212,26 +253,28 @@ func postBlog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = writeJSON(filepath.Join(dir, "post.json"), struct {
-		ID     int      `json:"id"`
-		Title  string   `json:"title"`
-		Date   string   `json:"date"`
-		Tags   []string `json:"tags"`
-		Author string   `json:"author"`
-		Hex    string   `json:"hex"`
-		Quote  string   `json:"quote"`
-		Image  string   `json:"image"`
-		Body   string   `json:"body"`
-	}{id, title, entry.Date, entry.Tags, strings.TrimSpace(r.FormValue("author")), postHex(now), strings.TrimSpace(r.FormValue("quote")), entry.Image, body})
+	post := blogPost{id, title, entry.Date, entry.Tags, strings.TrimSpace(r.FormValue("author")), postHex(now), strings.TrimSpace(r.FormValue("quote")), entry.Image, body}
+	err = writeJSON(filepath.Join(dir, "post.json"), post)
+	if err == nil {
+		err = writeIndex("blog/all.json", archive, struct {
+			blogPost
+			Dir string `json:"dir"`
+		}{post, entry.Dir})
+	}
 	if err == nil {
 		err = writeIndex("blog/index.json", index, entry)
+		if err != nil {
+			// Keep the original bytes so a failed publish leaves no archive diff.
+			if rollbackErr := writeFile("blog/all.json", archiveRaw); rollbackErr != nil {
+				err = errors.Join(err, fmt.Errorf("restore blog archive: %w", rollbackErr))
+			}
+		}
 	}
 	if err != nil {
-		os.RemoveAll(dir)
-		fail(w, "write post", err)
+		fail(w, "write post", errors.Join(err, os.RemoveAll(dir)))
 		return
 	}
-	reply(w, http.StatusOK, "done", "written to "+dir+publish(r, dir, "blog/index.json"))
+	reply(w, http.StatusOK, "done", "written to "+dir+publish(r, dir, "blog/index.json", "blog/all.json"))
 }
 
 func postGallery(w http.ResponseWriter, r *http.Request) {
@@ -358,11 +401,28 @@ func writeJSON(path string, v any) error {
 	if err := enc.Encode(v); err != nil {
 		return err
 	}
+	return writeFile(path, buf.Bytes())
+}
+
+func writeFile(path string, data []byte) error {
 	tmp := path + ".tmp"
-	if err := os.WriteFile(tmp, buf.Bytes(), 0o644); err != nil {
-		return err
+	file, err := os.OpenFile(tmp, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o644)
+	if err != nil {
+		return fmt.Errorf("create %s: %w", tmp, err)
 	}
-	return os.Rename(tmp, path)
+	defer func() {
+		if err := os.Remove(tmp); err != nil && !errors.Is(err, os.ErrNotExist) {
+			slog.Error("remove temporary file", "path", tmp, "err", err)
+		}
+	}()
+	_, err = file.Write(data)
+	if err := errors.Join(err, file.Close()); err != nil {
+		return fmt.Errorf("write %s: %w", tmp, err)
+	}
+	if err := os.Rename(tmp, path); err != nil {
+		return fmt.Errorf("replace %s: %w", path, err)
+	}
+	return nil
 }
 
 func dirName(id int, title string) string {
@@ -405,12 +465,13 @@ func postHex(now time.Time) string {
 
 // publish runs the git steps ticked in the form. The post is already on disk,
 // so a git failure is reported in the status text instead of failing the request.
-func publish(r *http.Request, dir, index string) string {
+func publish(r *http.Request, dir string, indexes ...string) string {
 	status := ""
 	if r.FormValue("commit") != "" {
-		err := git(r.Context(), "add", "--", dir, index)
+		paths := append([]string{dir}, indexes...)
+		err := git(r.Context(), append([]string{"add", "--"}, paths...)...)
 		if err == nil {
-			err = git(r.Context(), "commit", "-m", "post: "+filepath.ToSlash(dir), "--", dir, index)
+			err = git(r.Context(), append([]string{"commit", "-m", "post: " + filepath.ToSlash(dir), "--"}, paths...)...)
 		}
 		if err != nil {
 			slog.Error("git commit", "err", err)
