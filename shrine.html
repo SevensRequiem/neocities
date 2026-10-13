@@ -11,6 +11,7 @@
     <meta property="og:title" content="a shrine to XaTuring :: Requiem" />
     <meta property="og:description" content="A node in the expanding web. A small light in the data sea." />
     <meta property="og:url" content="https://requiem.moe/shrine.html" />
+    <link rel="stylesheet" href="./assets/css/effects.css" />
     <style>
       @font-face {
         font-family: 'DepartureMono';
@@ -33,21 +34,15 @@
         margin: 0;
         min-width: 280px;
         background:
-          radial-gradient(ellipse 44% 40% at 50% 37%, #37235c30, transparent),
-          radial-gradient(ellipse 90% 50% at 50% 90%, #14203935, transparent),
-          #030509;
+          radial-gradient(ellipse 60% 50% at 50% 46%, rgba(58, 36, 110, 0.38) 0%, rgba(14, 10, 40, 0.2) 45%, transparent 75%),
+          radial-gradient(ellipse 120% 80% at 50% 110%, rgba(20, 40, 80, 0.35) 0%, transparent 60%),
+          #010204;
+        background-attachment: fixed;
         color: var(--text);
         font: 11px/1.8 'DepartureMono', ui-monospace, monospace;
       }
 
-      body::after {
-        content: '';
-        position: fixed;
-        z-index: 5;
-        inset: 0;
-        pointer-events: none;
-        background: repeating-linear-gradient(transparent 0 2px, #00000020 2px 3px);
-      }
+      .site-header, main, .site-footer { position: relative; z-index: 2; }
 
       a { color: inherit; text-decoration: none; }
       button { font: inherit; }
@@ -61,7 +56,7 @@
         position: absolute;
         top: -80px;
         left: 24px;
-        z-index: 10;
+        z-index: 10000;
         padding: 10px;
         background: #030509;
       }
@@ -87,7 +82,6 @@
         border: 0;
         background: none;
         color: var(--text);
-        cursor: pointer;
       }
       .motion-button:hover { color: var(--accent); }
 
@@ -102,9 +96,9 @@
         font-weight: 400;
         line-height: 1.35;
         letter-spacing: .14em;
-        text-shadow: 0 0 38px #8ea4e53b;
+        text-shadow: var(--smear);
       }
-      .subtitle { margin: 0; color: var(--accent); letter-spacing: .25em; font-size: 10px; }
+      .subtitle { margin: 0; color: var(--accent); letter-spacing: .25em; font-size: 10px; text-shadow: var(--smear); }
 
       .altar {
         position: relative;
@@ -133,6 +127,7 @@
         font-size: 10px;
         line-height: 2.2;
         letter-spacing: .16em;
+        text-shadow: var(--smear-soft);
       }
       .altar-note span { display: block; }
       .altar-note-left { left: 3%; }
@@ -150,6 +145,7 @@
         color: var(--text-dim);
         font-size: 9px;
         letter-spacing: .22em;
+        text-shadow: var(--smear);
       }
       .altar-caption::before, .altar-caption::after { content: ''; width: 44px; height: 1px; background: var(--border); }
 
@@ -159,6 +155,7 @@
         color: #d5d6e3;
         font: italic clamp(18px, 2.4vw, 23px)/1.6 Georgia, 'Times New Roman', serif;
         text-wrap: balance;
+        text-shadow: var(--smear-soft);
       }
       .invocation-source { display: inline-block; margin-top: 10px; color: var(--text-dim); font-size: 9px; letter-spacing: .16em; }
       .offering { margin-top: 24px; text-align: center; }
@@ -169,7 +166,6 @@
         background: #a5e8c908;
         color: var(--accent);
         letter-spacing: .12em;
-        cursor: pointer;
         transition: background .2s, border-color .2s;
       }
       .spark-button:hover { background: #a5e8c915; border-color: #a5e8c985; }
@@ -241,6 +237,11 @@
     </style>
   </head>
   <body>
+    <pre class="cloud cloud-left" aria-hidden="true"></pre>
+    <pre class="cloud cloud-right" aria-hidden="true"></pre>
+    <div id="vignette" aria-hidden="true"></div>
+    <div id="scanlines" aria-hidden="true"></div>
+    <div id="static-overlay" aria-hidden="true"></div>
     <a class="skip-link" href="#shrine">skip to shrine</a>
     <header class="site-header">
       <a class="home-link" href="./index.html"><span aria-hidden="true">&#8592;</span>::REQUIEM / home</a>
@@ -249,7 +250,7 @@
         <button class="motion-button" id="motion-toggle" type="button" hidden>pause motion</button>
       </div>
     </header>
-    <main id="shrine" tabindex="-1">
+    <main class="ambient-frame" id="shrine" tabindex="-1">
       <header class="dedication">
         <p class="eyebrow">A NODE IN THE EXPANDING WEB</p>
         <h1>XaTuring</h1>
@@ -292,6 +293,7 @@
       <p>Invocation: original material &copy; 1993 Don Webb. Expanded 2004 by John J. Coughlin.</p>
       <p>Ritual as metaphor. Freedom and consent, in every system.</p>
     </footer>
+    <script src="./assets/js/effects.js"></script>
     <script>
       (() => {
         const canvas = document.getElementById('data-sea');
@@ -457,6 +459,7 @@
           cancelAnimationFrame(frameId);
           last = 0;
           motion.textContent = paused ? 'resume motion' : 'pause motion';
+          document.body.dataset.motion = paused ? 'paused' : 'running';
           if (paused || document.hidden || !visible) return;
           frameId = requestAnimationFrame(frame);
         };

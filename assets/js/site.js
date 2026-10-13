@@ -1,8 +1,4 @@
 (function () {
-  var prefersReducedMotion = window.matchMedia(
-    '(prefers-reduced-motion: reduce)'
-  ).matches;
-
   document.querySelectorAll('.flag-col').forEach((col, i) => {
     col.style.animationDelay = `${(6 - i) * 0.4}s`;
   });
@@ -303,48 +299,6 @@
     if (e.target === lightbox) lightbox.close();
   });
 
-  var clouds = document.querySelectorAll('.cloud');
-  var CLOUD_RAMP = '.:-=+*#%@';
-
-  function cloudHash(x, y) {
-    var n = Math.sin(x * 127.1 + y * 311.7) * 43758.5453;
-    return n - Math.floor(n);
-  }
-
-  function cloudNoise(x, y) {
-    var xi = Math.floor(x);
-    var yi = Math.floor(y);
-    var u = (x - xi) * (x - xi) * (3 - 2 * (x - xi));
-    var v = (y - yi) * (y - yi) * (3 - 2 * (y - yi));
-    var top = cloudHash(xi, yi) + (cloudHash(xi + 1, yi) - cloudHash(xi, yi)) * u;
-    var bottom = cloudHash(xi, yi + 1) + (cloudHash(xi + 1, yi + 1) - cloudHash(xi, yi + 1)) * u;
-    return top + (bottom - top) * v;
-  }
-
-  function drawClouds() {
-    var cols = Math.min(160, Math.ceil((innerWidth / 2 - 642) / 5));
-    if (cols <= 0) return;
-    var rows = Math.floor((innerHeight * 0.72) / 10);
-    var scroll = performance.now() * 0.004;
-    var sides = ['', ''];
-    for (var y = 0; y < rows; y++) {
-      var envelope = 0.5 + 0.5 * Math.sin((Math.PI * y) / (rows - 1));
-      for (var c = -cols; c < cols; c++) {
-        var density = cloudNoise((c + scroll) * 0.06, y * 0.16) * 0.65 + cloudNoise((c + scroll) * 0.17, y * 0.4) * 0.35;
-        var level = Math.floor((density * envelope - 0.46) * 18);
-        sides[c < 0 ? 0 : 1] += level < 0 ? ' ' : CLOUD_RAMP[Math.min(level, CLOUD_RAMP.length - 1)];
-      }
-      sides[0] += '\n';
-      sides[1] += '\n';
-    }
-    clouds[0].textContent = sides[0];
-    clouds[1].textContent = sides[1];
-  }
-
-  drawClouds();
-  addEventListener('resize', drawClouds);
-  if (!prefersReducedMotion) setInterval(drawClouds, 125);
-
   var fpsNote = document.getElementById('fps');
   var fpsFrames = 0;
   var fpsSince = performance.now();
@@ -357,80 +311,4 @@
     }
     requestAnimationFrame(tick);
   });
-
-  var GHOST_COUNT = 16;
-  var GHOST_INTERVAL = 35;
-  var GHOST_LIFE = 800;
-  var ghostPool = null;
-  var ghostIdx = 0;
-  var lastGhostTime = 0;
-  var ghostRafId = 0;
-
-  function makeGhostPool() {
-    var pool = [];
-    for (var i = 0; i < GHOST_COUNT; i++) {
-      var img = document.createElement('img');
-      img.src = './assets/cursors/arrow.png';
-      img.className = 'cursor-ghost';
-      img.style.left = '0';
-      img.style.top = '0';
-      img.style.opacity = '0';
-      img.style.transform = 'translate3d(-100px,-100px,0)';
-      document.body.appendChild(img);
-      pool.push({
-        el: img,
-        born: 0,
-        x: 0,
-        y: 0,
-        driftX: 0,
-        driftY: 0,
-        active: false,
-      });
-    }
-    return pool;
-  }
-
-  document.addEventListener('mousemove', function (e) {
-    if (prefersReducedMotion || document.body.classList.contains('low-fx'))
-      return;
-    var now = Date.now();
-    if (now - lastGhostTime < GHOST_INTERVAL) return;
-    lastGhostTime = now;
-    if (!ghostPool) ghostPool = makeGhostPool();
-    var g = ghostPool[ghostIdx];
-    ghostIdx = (ghostIdx + 1) % GHOST_COUNT;
-    g.born = now;
-    g.x = e.clientX;
-    g.y = e.clientY;
-    g.driftX = (Math.random() - 0.5) * 8;
-    g.driftY = (Math.random() - 0.5) * 8;
-    g.active = true;
-    g.el.style.opacity = '0.5';
-    g.el.style.transform = 'translate3d(' + g.x + 'px,' + g.y + 'px,0)';
-    if (!ghostRafId) ghostRafId = requestAnimationFrame(updateGhosts);
-  });
-
-  function updateGhosts() {
-    var now = Date.now();
-    var alive = 0;
-    for (var i = 0; i < ghostPool.length; i++) {
-      var g = ghostPool[i];
-      if (!g.active) continue;
-      var age = now - g.born;
-      if (age > GHOST_LIFE) {
-        g.active = false;
-        g.el.style.opacity = '0';
-        continue;
-      }
-      alive++;
-      var t = age / GHOST_LIFE;
-      var gx = (g.x + g.driftX * t).toFixed(1);
-      var gy = (g.y + g.driftY * t).toFixed(1);
-      var sc = (1 - t * 0.3).toFixed(3);
-      g.el.style.opacity = (0.45 * (1 - t * t)).toFixed(3);
-      g.el.style.transform =
-        'translate3d(' + gx + 'px,' + gy + 'px,0) scale(' + sc + ')';
-    }
-    ghostRafId = alive ? requestAnimationFrame(updateGhosts) : 0;
-  }
 })();
