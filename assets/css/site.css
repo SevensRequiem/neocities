@@ -757,6 +757,7 @@ button.panel-link {
 
 .tab-bar {
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-end;
   gap: 6px;
 }
