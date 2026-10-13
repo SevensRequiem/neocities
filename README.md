@@ -6,7 +6,7 @@ my live neocities page & posting automation
 
 The site fetches `index.json`, which browsers block on `file://`, so opening `index.html` from disk shows "signal lost". Use the `view site` link in the poster instead; it serves the site at `/site/`.
 
-Tick `git commit` to commit the new post directory, its index and (for blog posts) `blog/all.json` as `post: <dir>`, and `git push` to push the current branch to `origin`. Pushing `main` publishes. The deploy workflow syncs `index.html`, `robots.txt`, `sitemap.xml`, `assets/`, `blog/` and `gallery/` to neocities; `poster/` stays in the repo.
+Tick `git commit` to commit the new post directory, its index and (for blog posts) `blog/all.json` as `post: <dir>`, and `git push` to push the current branch to `origin`. Pushing `main` publishes. The deploy workflow syncs `index.html`, `shrine.html`, `robots.txt`, `sitemap.xml`, `assets/`, `blog/` and `gallery/` to neocities; `poster/` stays in the repo.
 
 ## webring
 
