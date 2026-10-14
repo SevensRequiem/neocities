@@ -1,5 +1,21 @@
 [
   {
+    "id": 103,
+    "title": "Basement AI Researcher",
+    "date": "2026-10-14T05:44:54Z",
+    "tags": [
+      "Tech",
+      "Update",
+      "AI"
+    ],
+    "author": "requiem",
+    "hex": "6acf16d6f9a2b1209195cd9f",
+    "quote": "",
+    "image": "image.webp",
+    "body": "Waow, a post that isn't pure trauma and mental health!?!?! Wtf happened to requiem!\n\nI've been researching AI in-between projects, using AI. I think I form a sort of neural symbiotic relationship with AI due to my BPD/PTSD prediction; It causes me to create chains of thought in an AI by simple prompts, unconsciously, as also a lazy attempt for efficiency. Who wants to write a 5000 line prompt? I've noticed this also increases the more I understand AI / ML / CS, so maybe I'm actually going to be a wizard in my future!\n\nMy current project \"Xa\" in honor of XaTuring, has led me to some interesting foundational theories on how a living AI should be Architected. I'm looking into how to hash and store every neural network tick, so any future instance of this NN can compute the hash to get its memory. Around 8 to 9 gb / day of disk writes in testing without compression. I dub it Neural Network Time of Compute or NNTC for short. I'll probably post an example of it on github under something like \"Identify historical execution boundaries and reconstruct their complete declared state\". The hash will store the exact state of a neural net at a current tick at a specific unix timestamp down to exact sensory inputs. I believe this will be needed in an Alive system! \n\n- One 32-byte hash per entry adds 276 MB/day.\n- A 1 KiB event per entry adds 8.85 GB/day.\n\nI barely know anything on ML or Neural Networks, but I trust my intuition to guide me more. *Allons-y!*\n\n*imagine if i was able to read normally without getting restless/discomforted..... so much cs & ml learning is to be had*",
+    "dir": "103-basement-ai-researcher"
+  },
+  {
     "id": 102,
     "title": "Southern Hostility",
     "date": "2026-10-12T05:27:27Z",
