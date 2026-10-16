@@ -22,7 +22,6 @@
   ringTrack.appendChild(ringSet);
 
   var tabs = document.querySelectorAll('.tab-btn');
-  var postTab = document.getElementById('tab-post');
 
   function selectTab(tab) {
     tabs.forEach(function (t) {
@@ -35,7 +34,6 @@
 
   tabs.forEach(function (tab) {
     tab.addEventListener('click', function () {
-      if (tab.id === 'tab-weblog' && !postTab.hidden) location.hash = '#page-1';
       selectTab(tab);
     });
   });
@@ -64,7 +62,7 @@
       var frame = el('div', 'mosaic-frame post-frame');
       var img = el('img', 'mosaic-img');
       img.src = './blog/' + post.dir + '/' + post.image;
-      img.alt = '';
+      img.alt = post.title;
       img.loading = 'lazy';
       frame.append(img);
       if (latest) frame.append(el('div', 'frame-tag', 'LATEST :: TRANSMISSION'));
@@ -101,7 +99,7 @@
     page = Math.min(Math.max(n, 1), pages);
     var cards = posts.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE).map(function (post) {
       var card = postCard(post, post === posts[0]);
-      card.append(el('p', 'entry-para', post.excerpt), postFoot('read more', '#post-' + post.id));
+      card.append(el('p', 'entry-para', post.excerpt), postFoot('read more', './blog/' + post.dir + '/'));
       return card;
     });
     var pager = el('nav', 'pager');
@@ -128,42 +126,16 @@
     var tools = el('div', 'weblog-tools');
     tools.append(pager, exportLink);
     weblog.replaceChildren.apply(weblog, [tools].concat(cards));
-    postTab.hidden = true;
     selectTab(document.getElementById('tab-weblog'));
-  }
-
-  function showPost(id) {
-    var post = posts.find(function (p) {
-      return p.id === id;
-    });
-    if (!post) return showPage(1);
-    var hash = location.hash;
-    var card = postCard(post, false);
-    var body = el('div', 'post-body', 'receiving...');
-    card.append(body, postFoot('back to weblog', '#page-' + page));
-    weblog.replaceChildren(card);
-    postTab.hidden = false;
-    selectTab(postTab);
-
-    fetch('./blog/' + post.dir + '/post.json')
-      .then(json)
-      .then(function (full) {
-        if (location.hash !== hash) return;
-        body.innerHTML = DOMPurify.sanitize(marked.parse(full.body));
-        body.querySelectorAll('a[href]').forEach(function (a) {
-          a.target = '_blank';
-          a.rel = 'noopener noreferrer';
-        });
-      })
-      .catch(function () {
-        body.textContent = 'signal lost: could not load this entry.';
-      });
   }
 
   function route(e) {
     var m = location.hash.match(/^#(post|page)-(\d+)$/);
-    if (m && m[1] === 'post') showPost(Number(m[2]));
-    else showPage(m ? Number(m[2]) : 1);
+    var post = m && m[1] === 'post' && posts.find(function (p) {
+      return p.id === Number(m[2]);
+    });
+    if (post) return location.replace('./blog/' + post.dir + '/');
+    showPage(m && m[1] === 'page' ? Number(m[2]) : 1);
     if (e) document.querySelector('.tab-bar').scrollIntoView();
   }
 

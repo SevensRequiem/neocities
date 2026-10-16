@@ -11,6 +11,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"flag"
 	"fmt"
 	"html/template"
 	"io"
@@ -74,11 +75,24 @@ type blogPost struct {
 }
 
 func main() {
+	build := flag.Bool("build", false, "rebuild the static blog pages, archive, feed, sitemap and llms.txt, then exit")
+	flag.Parse()
 	for _, p := range []string{"blog/index.json", "gallery/index.json", "assets/js/marked.min.js"} {
 		if _, err := os.Stat(p); err != nil {
 			fmt.Fprintln(os.Stderr, "run from the site root: go run ./poster")
 			os.Exit(2)
 		}
+	}
+	if *build {
+		changed, err := buildSite()
+		for _, path := range changed {
+			fmt.Println(path)
+		}
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+		return
 	}
 	if _, err := exec.LookPath("magick"); err != nil {
 		fmt.Fprintln(os.Stderr, "magick (ImageMagick 7) is required for webp conversion")
@@ -274,7 +288,14 @@ func postBlog(w http.ResponseWriter, r *http.Request) {
 		fail(w, "write post", errors.Join(err, os.RemoveAll(dir)))
 		return
 	}
-	reply(w, http.StatusOK, "done", "written to "+dir+publish(r, dir, "blog/index.json", "blog/all.json"))
+	// The post is the source of truth and is already saved; a failed page
+	// build leaves it in place for `go run ./poster -build` to finish.
+	pages, err := buildSite()
+	if err != nil {
+		fail(w, "build pages", err)
+		return
+	}
+	reply(w, http.StatusOK, "done", "written to "+dir+publish(r, dir, append([]string{"blog/index.json", "blog/all.json"}, pages...)...))
 }
 
 func postGallery(w http.ResponseWriter, r *http.Request) {

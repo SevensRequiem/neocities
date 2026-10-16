@@ -49,6 +49,7 @@ func TestPostBlogPrependsFullArchive(t *testing.T) {
 			}
 			testWrite(t, "blog/index.json", tc.index)
 			testWrite(t, "blog/all.json", tc.archive)
+			testPostDirs(t)
 			for n, title := range []string{"First <&> 雪", "Second post"} {
 				oldIndex := testReadJSON[[]json.RawMessage](t, "blog/index.json")
 				oldArchive := testReadJSON[[]json.RawMessage](t, "blog/all.json")
@@ -200,6 +201,7 @@ func TestPostBlogCommitCheckbox(t *testing.T) {
 			}
 			testWrite(t, "blog/index.json", testIndex)
 			testWrite(t, "blog/all.json", testArchive)
+			testPostDirs(t)
 			testWrite(t, "unrelated.txt", "original\n")
 			testGit(t, "add", "--", "blog", "unrelated.txt")
 			testGit(t, "commit", "-m", "test: seed poster repository")
@@ -238,7 +240,7 @@ func TestPostBlogCommitCheckbox(t *testing.T) {
 			if got := testGit(t, "log", "-1", "--format=%s"); got != "post: blog/008-git-post\n" {
 				t.Errorf("commit subject = %q", got)
 			}
-			paths := "blog/008-git-post/post.json\nblog/all.json\nblog/index.json\n"
+			paths := "blog/002-newer/index.html\nblog/007-older/index.html\nblog/008-git-post/index.html\nblog/008-git-post/post.json\nblog/all.json\nblog/index.html\nblog/index.json\nfeed.xml\nllms.txt\nsitemap.xml\n"
 			if got := testGit(t, "diff-tree", "--no-commit-id", "--name-only", "-r", "HEAD"); got != paths {
 				t.Errorf("committed paths = %q, want %q", got, paths)
 			}
@@ -524,6 +526,17 @@ func blogRequest(t *testing.T, fields map[string]string, images ...[]byte) *http
 	req := httptest.NewRequest(http.MethodPost, "/blog", &body)
 	req.Header.Set("Content-Type", form.FormDataContentType())
 	return req
+}
+
+// testPostDirs creates the directories of the posts in testArchive, which a
+// real site always has and the page build writes into.
+func testPostDirs(t *testing.T) {
+	t.Helper()
+	for _, dir := range []string{"blog/002-newer", "blog/007-older"} {
+		if err := os.MkdirAll(dir, 0o755); err != nil {
+			t.Fatal(err)
+		}
+	}
 }
 
 func testWrite(t *testing.T, path, body string) {

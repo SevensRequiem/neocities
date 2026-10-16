@@ -10,6 +10,7 @@
     <meta name="theme-color" content="#020306" />
     <link rel="canonical" href="https://requiem.moe/" />
     <link rel="sitemap" type="application/xml" href="https://requiem.moe/sitemap.xml" />
+    <link rel="alternate" type="application/rss+xml" title="::Requiem weblog" href="https://requiem.moe/feed.xml" />
     <link rel="me" href="https://github.com/SevensRequiem" />
     <link rel="me" href="https://www.youtube.com/@SevensRequiem" />
     <meta property="og:type" content="website" />
@@ -151,7 +152,6 @@
         <nav class="tab-bar" aria-label="main navigation">
           <div class="tab-bar" role="tablist" aria-label="sections">
             <button class="panel-link tab-btn" type="button" role="tab" id="tab-weblog" aria-controls="panel-weblog" aria-selected="true">weblog</button>
-            <button class="panel-link tab-btn tab-sub" type="button" role="tab" id="tab-post" aria-controls="panel-weblog" aria-selected="false" hidden>_post</button>
             <button class="panel-link tab-btn" type="button" role="tab" id="tab-gallery" aria-controls="panel-gallery" aria-selected="false">gallery</button>
           </div>
           <a class="panel-link" href="./shrine.html">shrine</a>
@@ -162,6 +162,7 @@
         </div>
 
         <section class="tab-panel" id="panel-weblog" role="tabpanel" aria-labelledby="tab-weblog">
+          <a class="panel-link" href="./blog/">weblog archive</a>
         </section>
 
         <section class="tab-panel" id="panel-gallery" role="tabpanel" aria-labelledby="tab-gallery" hidden>
@@ -224,8 +225,6 @@
       </div>
     </dialog>
 
-    <script src="./assets/js/marked.min.js"></script>
-    <script src="./assets/js/purify.min.js"></script>
     <script src="./assets/js/effects.js"></script>
     <script src="./assets/js/site.js"></script>
   </body>

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>weblog archive :: requiem's weblog</title>
+    <meta name="description" content="Every entry in requiem's weblog: self-taught development, side projects, mental health and healing." />
+    <meta name="author" content="requiem" />
+    <meta name="theme-color" content="#020306" />
+    <link rel="canonical" href="https://requiem.moe/blog/" />
+    <link rel="alternate" type="application/rss+xml" title="::Requiem weblog" href="https://requiem.moe/feed.xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="::Requiem" />
+    <meta property="og:url" content="https://requiem.moe/blog/" />
+    <meta property="og:title" content="weblog archive :: ::Requiem" />
+    <meta property="og:image" content="https://requiem.moe/assets/og.jpg" />
+    <link rel="stylesheet" href="../assets/css/effects.css" />
+    <link rel="stylesheet" href="../assets/css/site.css" />
+  </head>
+  <body>
+    <pre class="cloud cloud-left" aria-hidden="true"></pre>
+    <pre class="cloud cloud-right" aria-hidden="true"></pre>
+    <div id="vignette"></div>
+    <div id="scanlines"></div>
+    <div id="static-overlay"></div>
+    <main class="ambient-frame post-page">
+      <div class="main-col">
+        <nav class="tab-bar" aria-label="main navigation">
+          <a class="panel-link" href="../">weblog</a>
+          <a class="panel-link" href="../shrine.html">shrine</a>
+        </nav>
+        <article class="entry-card post-card">
+          <header class="entry-head">
+            <h1 class="panel-title">::ARCHIVE</h1>
+            <span class="entry-tag">{{len .}} entries</span>
+          </header>
+          <ol class="archive-list">
+{{- range .}}
+            <li><time class="entry-tag" datetime="{{.Date}}">{{.Stamp}}</time><a class="panel-link" href="./{{.Dir}}/">{{.Title}}</a></li>
+{{- end}}
+          </ol>
+        </article>
+      </div>
+    </main>
+    <script src="../assets/js/effects.js"></script>
+  </body>
+</html>

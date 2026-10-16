@@ -4,6 +4,9 @@
 !/*.html
 !/robots.txt
 !/sitemap.xml
+!/feed.xml
+!/llms.txt
+!/go.sum
 !/README.md
 !/blog/
 !/gallery/

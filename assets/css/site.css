@@ -632,15 +632,6 @@ button.panel-link {
   color: var(--bg-dark);
 }
 
-.tab-btn[hidden] {
-  display: none;
-}
-
-.tab-sub {
-  align-self: flex-end;
-  font-size: 10px;
-}
-
 .tab-panel {
   display: flex;
   flex-direction: column;
@@ -1327,6 +1318,40 @@ button.panel-link {
   gap: 10px;
   padding-top: 10px;
   border-top: 1px dashed rgba(170, 170, 255, 0.18);
+}
+
+.post-page {
+  grid-template-columns: minmax(0, 760px);
+}
+
+.post-page .main-col {
+  grid-column: auto;
+  grid-row: auto;
+}
+
+.post-page .post-card:hover {
+  transform: none;
+}
+
+.post-page .post-foot > a[rel='prev'] {
+  margin-left: 0;
+}
+
+.archive-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  list-style: none;
+}
+
+.archive-list li {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.archive-list .entry-tag {
+  flex: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
