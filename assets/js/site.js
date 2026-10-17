@@ -271,6 +271,16 @@
     if (e.target === lightbox) lightbox.close();
   });
 
+  var viewsNote = document.getElementById('views');
+  fetch('https://neocities.org/api/info?sitename=sevensrequiem')
+    .then(json)
+    .then(function (data) {
+      viewsNote.textContent = data.info.views.toLocaleString('en-US') + ' views';
+    })
+    .catch(function () {
+      viewsNote.textContent = 'views: signal lost';
+    });
+
   var fpsNote = document.getElementById('fps');
   var fpsFrames = 0;
   var fpsSince = performance.now();
