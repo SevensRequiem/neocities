@@ -105,6 +105,43 @@ button {
   background-position: 100% 50%, 15px 50%, 0 50%;
 }
 
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  top: 50%;
+  left: max(0px, calc(50% - 610px));
+  right: max(0px, calc(50% - 610px));
+  height: 72vh;
+  transform: translateY(-50%);
+  z-index: 0;
+  pointer-events: none;
+  background: url('../img/bliss.webp') center 58% / cover no-repeat;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 20%, #000 80%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 20%, #000 80%, transparent);
+}
+
+body::before {
+  opacity: 0.4;
+  filter: contrast(1.15) saturate(0.9);
+}
+
+body::after {
+  opacity: 0;
+  mix-blend-mode: screen;
+  filter: hue-rotate(40deg) saturate(1.6);
+  animation: bliss-tear 7s steps(1) infinite;
+}
+
+@keyframes bliss-tear {
+  0%, 100% { opacity: 0; clip-path: inset(0 0 100% 0); }
+  61% { opacity: 0.5; clip-path: inset(38% 0 57% 0); transform: translate(-14px, -50%); }
+  62% { opacity: 0.4; clip-path: inset(71% 0 26% 0); transform: translate(22px, -50%); }
+  63% { opacity: 0; }
+  88% { opacity: 0.45; clip-path: inset(12% 0 85% 0); transform: translate(-30px, -50%); }
+  89% { opacity: 0; }
+}
+
 .cloud {
   position: fixed;
   top: 50%;
@@ -150,9 +187,17 @@ body[data-motion='paused'] #static-overlay {
   animation: none;
 }
 
+body[data-motion='paused']::after {
+  animation: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   body:not([data-motion='running']) #static-overlay {
     background-image: url('../img/static-still.png');
+    animation: none;
+  }
+
+  body:not([data-motion='running'])::after {
     animation: none;
   }
 }
