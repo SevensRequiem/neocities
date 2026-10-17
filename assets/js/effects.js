@@ -13,6 +13,7 @@
   var ghostPool = null;
   var ghostIdx = 0;
   var lastGhostTime = 0;
+  var ghostSrc = new URL('../cursors/arrow.png', document.currentScript.src).href;
   var ghostRafId = 0;
 
   function cloudHash(x, y) {
@@ -54,7 +55,7 @@
     var pool = [];
     for (var i = 0; i < ghostCount; i++) {
       var img = document.createElement('img');
-      img.src = './assets/cursors/arrow.png';
+      img.src = ghostSrc;
       img.alt = '';
       img.setAttribute('aria-hidden', 'true');
       img.className = 'cursor-ghost';

@@ -3,10 +3,10 @@
     col.style.animationDelay = `${(6 - i) * 0.4}s`;
   });
 
-  var alchemySymbols = [0x2299, 0x263c, 0x2722, 0x2723, 0x2724, 0x2725, 0x2726, 0x2727].map(function (cp) {
+  var alchemySymbols = [0x2604, 0x260a, 0x260b, 0x260c, 0x260d, 0x2620, 0x2622, 0x2624, 0x262a, 0x262f, 0x2656, 0x265c, 0x2666, 0x2672, 0x269b].map(function (cp) {
     return String.fromCodePoint(cp);
   });
-  [[0x2630, 8], [0x4dc0, 64], [0x1d300, 60], [0x101d0, 45], [0x1f780, 40]].forEach(function (r) {
+  [[0x263c, 24], [0x26b3, 10], [0x1f700, 116]].forEach(function (r) {
     for (var i = 0; i < r[1]; i++) alchemySymbols.push(String.fromCodePoint(r[0] + i));
   });
   var ringTrack = document.getElementById('ring-track');
@@ -120,22 +120,28 @@
     var jump = el('label', 'entry-tag pager-jump', 'page');
     jump.append(picker, '/ ' + pages);
     pager.append(prev, jump, next);
-    var exportLink = el('a', 'panel-link blog-export', 'blog export json');
+    var exportLink = el('a', 'blog-export blog-export-json', 'export');
     exportLink.href = './blog/all.json';
     exportLink.download = 'all.json';
+    var rssLink = el('a', 'blog-export blog-export-rss', 'rss');
+    rssLink.href = './feed.xml';
+    var feeds = el('div', 'weblog-feeds');
+    feeds.append(exportLink, rssLink);
     var tools = el('div', 'weblog-tools');
-    tools.append(pager, exportLink);
+    tools.append(pager, feeds);
     weblog.replaceChildren.apply(weblog, [tools].concat(cards));
     selectTab(document.getElementById('tab-weblog'));
   }
 
   function route(e) {
-    var m = location.hash.match(/^#(post|page)-(\d+)$/);
-    var post = m && m[1] === 'post' && posts.find(function (p) {
+    var m = location.hash.match(/^#(post|page|entry)-(\d+)$/);
+    var idx = m && m[1] !== 'page' ? posts.findIndex(function (p) {
       return p.id === Number(m[2]);
-    });
-    if (post) return location.replace('./blog/' + post.dir + '/');
-    showPage(m && m[1] === 'page' ? Number(m[2]) : 1);
+    }) : -1;
+    if (m && m[1] === 'post' && idx >= 0) return location.replace('./blog/' + posts[idx].dir + '/');
+    var page = m && m[1] === 'page' ? Number(m[2]) : idx >= 0 ? Math.floor(idx / PAGE_SIZE) + 1 : 1;
+    if (m && m[1] === 'entry') history.replaceState(null, '', '#page-' + page);
+    showPage(page);
     if (e) document.querySelector('.tab-bar').scrollIntoView();
   }
 
@@ -278,7 +284,7 @@
       viewsNote.replaceChildren(
         data.views.toLocaleString('en-US') + ' views ',
         el('span', 'diff-add', '+' + data.week.views.toLocaleString('en-US')),
-        ' / 7d'
+        ' / wk'
       );
       viewsNote.title = data.hits.toLocaleString('en-US') + ' hits, +' + data.week.hits.toLocaleString('en-US') + ' since ' + data.week.since.slice(0, 10);
     })

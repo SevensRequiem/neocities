@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"encoding/xml"
+	"fmt"
 	"os"
 	"reflect"
 	"regexp"
@@ -48,8 +49,8 @@ func TestBuildSite_RendersCrawlablePages(t *testing.T) {
 		`<a href="https://example.com/" rel="noreferrer noopener" target="_blank">out</a>`,
 		`<a href="/shrine.html">in</a>`,
 		`<td>1</td>`,
-		`<a class="panel-link" href="../007-older/" rel="next">older :: older</a>`,
-		`href="../../#page-1"`,
+		`<a class="panel-link pager-next" href="../007-older/" rel="next">older :: older</a>`,
+		`href="../../#entry-2"`,
 	} {
 		if !strings.Contains(page, s) {
 			t.Errorf("newer page is missing %q", s)
@@ -155,4 +156,42 @@ func testRead(t *testing.T, path string) []byte {
 		t.Fatal(err)
 	}
 	return raw
+}
+
+func TestBuildSite_FeedKeepsNewestTwenty(t *testing.T) {
+	t.Chdir(t.TempDir())
+	var all, index []string
+	for i := 21; i >= 1; i-- {
+		dir := fmt.Sprintf("%03d-p", i)
+		if err := os.MkdirAll("blog/"+dir, 0o755); err != nil {
+			t.Fatal(err)
+		}
+		post := fmt.Sprintf(`{"id":%d,"dir":%q,"title":"p%d","date":"2026-01-%02dT00:00:00Z","tags":[],"author":"","hex":"","quote":"","image":"","body":"b"}`, i, dir, i, i)
+		all = append(all, post)
+		index = append(index, post)
+	}
+	testWrite(t, "blog/all.json", "["+strings.Join(all, ",")+"]")
+	testWrite(t, "blog/index.json", "["+strings.Join(index, ",")+"]")
+
+	if _, err := buildSite(); err != nil {
+		t.Fatal(err)
+	}
+	var feed struct {
+		Links []string `xml:"channel>item>link"`
+	}
+	if err := xml.Unmarshal(testRead(t, "feed.xml"), &feed); err != nil {
+		t.Fatal(err)
+	}
+	if len(feed.Links) != 20 || feed.Links[0] != "https://requiem.moe/blog/021-p/" || feed.Links[19] != "https://requiem.moe/blog/002-p/" {
+		t.Errorf("feed links = %d, first %q, last %q", len(feed.Links), feed.Links[0], feed.Links[len(feed.Links)-1])
+	}
+	var sitemap struct {
+		Locs []string `xml:"url>loc"`
+	}
+	if err := xml.Unmarshal(testRead(t, "sitemap.xml"), &sitemap); err != nil {
+		t.Fatal(err)
+	}
+	if len(sitemap.Locs) != 24 || !strings.Contains(string(testRead(t, "llms.txt")), "/blog/001-p/") {
+		t.Errorf("sitemap has %d urls or llms.txt dropped the oldest post", len(sitemap.Locs))
+	}
 }

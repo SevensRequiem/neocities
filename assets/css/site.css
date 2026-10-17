@@ -5,8 +5,8 @@
 }
 
 @font-face {
-  font-family: 'NotoSymbols2';
-  src: url('../fonts/NotoSansSymbols2-Regular.ttf') format('truetype');
+  font-family: 'Esoterik';
+  src: url('../fonts/Esoterik-pLDr.ttf') format('truetype');
   font-display: swap;
 }
 
@@ -770,7 +770,7 @@ button.panel-link {
 .ring-track span {
   flex: none;
   width: 18px;
-  font-family: 'NotoSymbols2', serif;
+  font-family: 'Esoterik', serif;
   font-size: 12px;
   line-height: 22px;
   letter-spacing: 0;
@@ -1085,8 +1085,42 @@ button.panel-link {
   flex: 1 1 260px;
 }
 
-.blog-export {
+.weblog-feeds {
+  display: flex;
+  gap: 6px;
   margin-left: auto;
+}
+
+.blog-export {
+  padding: 5px 12px 5px 10px;
+  font-size: 10px;
+  line-height: 1.6;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  color: var(--text-bright);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--uplink) 24%, transparent), var(--bg-card) 70%);
+  border: 1px solid color-mix(in srgb, var(--uplink) 55%, transparent);
+  border-left-width: 4px;
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease,
+    filter 0.3s ease;
+}
+
+.blog-export:hover,
+.blog-export:focus-visible {
+  transform: translateY(-2px);
+  border-color: var(--uplink);
+  filter: brightness(1.25);
+  outline: none;
+}
+
+.blog-export-json {
+  --uplink: var(--accent-lavender);
+}
+
+.blog-export-rss {
+  --uplink: var(--lcd-amber);
 }
 
 .pager {

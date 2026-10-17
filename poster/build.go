@@ -49,7 +49,6 @@ type pageData struct {
 	Image       string
 	Stamp       string
 	Tags        string
-	Page        int
 	Body        template.HTML
 	LD          template.JS
 	Newer       *sitePost
@@ -97,7 +96,7 @@ func buildSite() ([]string, error) {
 	}
 
 	files := map[string][]byte{}
-	items := make([]rssItem, 0, len(posts))
+	items := make([]rssItem, 0, 20)
 	urls := []sitemapURL{{Loc: siteURL}, {Loc: siteURL + "shrine.html"}, {Loc: siteURL + "blog/"}}
 	rows := make([]archiveRow, 0, len(posts))
 	var llms strings.Builder
@@ -134,9 +133,7 @@ func buildSite() ([]string, error) {
 			Image:       image,
 			Stamp:       date.Format("2006.01.02"),
 			Tags:        strings.Join(tags, " "),
-			// The homepage shows two posts per page (PAGE_SIZE in site.js).
-			Page: i/2 + 1,
-			Body: template.HTML(body),
+			Body:        template.HTML(body),
 		}
 		if i > 0 {
 			d.Newer = &posts[i-1]
@@ -175,16 +172,20 @@ func buildSite() ([]string, error) {
 		}
 		files[filepath.Join("blog", p.Dir, "index.html")] = page.Bytes()
 
-		items = append(items, rssItem{
-			Title:       p.Title,
-			Link:        url,
-			GUID:        url,
-			PubDate:     date.Format(time.RFC1123Z),
-			Author:      d.Author,
-			Category:    p.Tags,
-			Description: d.Description,
-			Content:     string(body),
-		})
+		// Feed readers refetch the whole file on every poll, so it stays small;
+		// the sitemap, archive and llms.txt still list every post.
+		if len(items) < 20 {
+			items = append(items, rssItem{
+				Title:       p.Title,
+				Link:        url,
+				GUID:        url,
+				PubDate:     date.Format(time.RFC1123Z),
+				Author:      d.Author,
+				Category:    p.Tags,
+				Description: d.Description,
+				Content:     string(body),
+			})
+		}
 		urls = append(urls, sitemapURL{Loc: url, LastMod: p.Date})
 		rows = append(rows, archiveRow{p.Dir, p.Title, p.Date, d.Stamp})
 		fmt.Fprintf(&llms, "- [%s](%s): %s\n", p.Title, url, d.Description)
