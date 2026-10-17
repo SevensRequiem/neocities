@@ -1,0 +1,48 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "requiem-api",
+	"main": "src/index.js",
+	"compatibility_date": "2026-10-01",
+	"workers_dev": false,
+	"preview_urls": false,
+	"routes": [
+		{
+			"pattern": "api.requiem.moe",
+			"custom_domain": true
+		}
+	],
+	"triggers": {
+		"crons": [
+			"*/10 * * * *"
+		]
+	},
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "requiem-api",
+			"database_id": "a05da497-0427-45bb-a704-3b5fedadd897",
+			"migrations_dir": "migrations"
+		}
+	],
+	"ratelimits": [
+		{
+			"name": "PER_IP",
+			"namespace_id": "1001",
+			"simple": {
+				"limit": 30,
+				"period": 60
+			}
+		},
+		{
+			"name": "GLOBAL",
+			"namespace_id": "1002",
+			"simple": {
+				"limit": 1200,
+				"period": 60
+			}
+		}
+	],
+	"observability": {
+		"enabled": true
+	}
+}

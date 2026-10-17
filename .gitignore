@@ -15,3 +15,7 @@
 !/go.mod
 !/LICENSE
 !/webring/
+!/cf-worker/
+/cf-worker/node_modules/
+/cf-worker/.wrangler/
+/cf-worker/.claude/
