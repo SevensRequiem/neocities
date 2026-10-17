@@ -1,5 +1,17 @@
 [
   {
+    "id": 105,
+    "dir": "105-block-game-dev-1",
+    "title": "Block Game Dev #1",
+    "date": "2026-10-17T01:56:22Z",
+    "tags": [
+      "Tech",
+      "Life"
+    ],
+    "excerpt": "Game development is pretty fun. I've been working on a couple games for the better part of a year now. I don't really want to speak on the end goal; rather I'd like to learn how to communicate better in technical stuff...",
+    "image": "image.webp"
+  },
+  {
     "id": 104,
     "dir": "104-inspirational-pain",
     "title": "Inspirational Pain",

@@ -7,6 +7,17 @@
     <description>requiem&#39;s weblog on self-taught development, side projects, mental health and healing.</description>
     <language>en</language>
     <item>
+      <title>Block Game Dev #1</title>
+      <link>https://requiem.moe/blog/105-block-game-dev-1/</link>
+      <guid>https://requiem.moe/blog/105-block-game-dev-1/</guid>
+      <pubDate>Sat, 17 Oct 2026 01:56:22 +0000</pubDate>
+      <dc:creator>requiem</dc:creator>
+      <category>Tech</category>
+      <category>Life</category>
+      <description>Game development is pretty fun. I&#39;ve been working on a couple games for the better part of a year now. I don&#39;t really want to speak on the end goal; rather I&#39;d like to learn how to communicate better in technical stuff...</description>
+      <content:encoded>&lt;p&gt;Game development is pretty fun. I&amp;#39;ve been working on a couple games for the better part of a year now. I don&amp;#39;t really want to speak on the end goal; rather I&amp;#39;d like to learn how to communicate better in technical stuff through this blog and my development!&lt;/p&gt;&#xA;&lt;p&gt;I&amp;#39;ve begun to work on the LoD after getting 400fps at 32k~ chunks rendered (64x64x12x2 chunks, y,up,down). I am hoping to keep the same efficiency in the LoD system which is designed to extend the view distance so the world looks infinite. It will form a sort of Fog of War around explored vs un-explored chunks.&lt;/p&gt;&#xA;&lt;p&gt;The noise system is fun too; I had made it interchangeable from cpu/gpu at runtime so older systems can benefit from GPU noise without having to rely on CPU SIMD which may not exist!&lt;/p&gt;&#xA;&lt;p&gt;As of posting, the latest dev video: &lt;a href=&#34;https://www.youtube.com/watch?v=DXO1SmcQUWc&#34; rel=&#34;noreferrer noopener&#34; target=&#34;_blank&#34;&gt;https://www.youtube.com/watch?v=DXO1SmcQUWc&lt;/a&gt;&lt;/p&gt;&#xA;</content:encoded>
+    </item>
+    <item>
       <title>Inspirational Pain</title>
       <link>https://requiem.moe/blog/104-inspirational-pain/</link>
       <guid>https://requiem.moe/blog/104-inspirational-pain/</guid>
