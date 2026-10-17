@@ -272,10 +272,15 @@
   });
 
   var viewsNote = document.getElementById('views');
-  fetch('https://neocities.org/api/info?sitename=sevensrequiem')
+  fetch('https://api.requiem.moe/views')
     .then(json)
     .then(function (data) {
-      viewsNote.textContent = data.info.views.toLocaleString('en-US') + ' views';
+      viewsNote.replaceChildren(
+        data.views.toLocaleString('en-US') + ' views ',
+        el('span', 'diff-add', '+' + data.week.views.toLocaleString('en-US')),
+        ' / 7d'
+      );
+      viewsNote.title = data.hits.toLocaleString('en-US') + ' hits, +' + data.week.hits.toLocaleString('en-US') + ' since ' + data.week.since.slice(0, 10);
     })
     .catch(function () {
       viewsNote.textContent = 'views: signal lost';
