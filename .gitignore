@@ -19,4 +19,6 @@
 !/cf-worker/
 /cf-worker/node_modules/
 /cf-worker/.wrangler/
+/cf-worker/.dev.vars
+/poster/.env
 /cf-worker/.claude/

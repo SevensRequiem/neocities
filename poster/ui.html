@@ -12,6 +12,7 @@
     <div class="tab-bar" role="tablist" aria-label="post type">
       <button class="tab-btn" type="button" role="tab" id="tab-blog" aria-controls="form-blog" aria-selected="true">weblog</button>
       <button class="tab-btn" type="button" role="tab" id="tab-gallery" aria-controls="form-gallery" aria-selected="false">gallery</button>
+      <button class="tab-btn" type="button" role="tab" id="tab-qa" aria-controls="qa-inbox" aria-selected="false">q&amp;a</button>
       <a class="tab-btn" href="/site/" target="_blank" rel="noopener noreferrer">view site</a>
     </div>
 
@@ -65,6 +66,14 @@
         <div class="preview-body" id="preview-body"></div>
       </section>
     </div>
+
+    <section class="qa-inbox" id="qa-inbox" aria-label="questions" hidden>
+      <div class="tag-row">
+        <h2 class="panel-title">::INBOX</h2>
+        <button class="tag-chip" type="button" id="qa-refresh">refresh</button>
+      </div>
+      <div class="qa-items" id="qa-items"></div>
+    </section>
 
     <p class="status-line" id="status-line" role="status"></p>
 

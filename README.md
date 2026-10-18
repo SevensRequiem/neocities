@@ -22,13 +22,27 @@ my live neocities page & posting automation
 
 To preview a tier: `sessionStorage.setItem('fx-tier', '2'); sessionStorage.setItem('fx-lock', '1')` in the console, then reload. `sessionStorage.clear()` re-enables probing.
 
-## view counter api
+## api worker
 
-`cf-worker/` runs on `api.requiem.moe`. A cron samples the Neocities info API every 10 minutes into D1; `GET /views` returns the latest Monday snapshot plus the change since the Monday before, cached per location until next Monday. CORS is `https://requiem.moe` only. Don't set `Access-Control-Allow-Origin` in zone header rules, they overwrite the Worker.
+`cf-worker/` runs on `api.requiem.moe`. CORS is `https://requiem.moe` only. Don't set `Access-Control-Allow-Origin` in zone header rules, they overwrite the Worker.
 
-Deploy from `cf-worker/`: `npm install`, `npx wrangler login`, `npm run deploy`. `npm run dev` for Miniflare; fire the cron with `curl "http://127.0.0.1:8787/__scheduled?cron=*/10+*+*+*+*"`. An empty `package.json` at the repo root breaks esbuild.
+**views.** A cron samples the Neocities info API every 10 minutes into D1; `GET /views` returns the latest Monday snapshot plus the change since the Monday before, cached per location until next Monday.
 
-Zone security rules for `api.requiem.moe` (dashboard, free plan): block methods other than `GET`/`OPTIONS`, block paths other than `/views`, block requests without `origin: https://requiem.moe` (disable while debugging), rate limit 20 req / 10 s per IP. Don't use Under Attack mode; its JS challenge breaks `fetch`.
+**anonymous q&a.** The homepage `::ASK` card shows the latest answer; its overlay takes questions and lists every answer, 20 per page.
+
+| route | auth | does |
+|---|---|---|
+| `GET /qa?before=<cursor>` | public | answered questions, newest first: `{ total, items, next }`, `next` is the cursor for the next page or `null` |
+| `POST /qa` | public | `{ "question": "..." }`, 1-500 characters, 3 per minute per IP. A filled `website` honeypot gets a silent 204 and nothing is stored |
+| `GET /qa/inbox` | bearer | the newest 200 questions, unanswered first |
+| `PUT /qa/<id>` | bearer | `{ "answer": "..." }`, 1-4000 characters; editing an answer keeps its original answered time |
+| `DELETE /qa/<id>` | bearer | removes the question |
+
+Only the question text and timestamps are stored; the IP is used for rate limiting and never written to D1. Answer from the poster's `q&a` tab: copy `poster/.env.example` to `poster/.env` (gitignored), set `QA_TOKEN`, then `go run ./poster`. Real environment variables override the file; `QA_API=http://127.0.0.1:8787` points it at `npm run dev`. The token is set once with `npx wrangler secret put QA_TOKEN`; for Miniflare put `QA_TOKEN=...` in `cf-worker/.dev.vars` (gitignored).
+
+Deploy from `cf-worker/`: `npm install`, `npx wrangler login`, `npm run deploy` (applies new D1 migrations first). `npm run dev` for Miniflare after `npx wrangler d1 migrations apply requiem-api --local`; fire the cron with `curl "http://127.0.0.1:8787/__scheduled?cron=*/10+*+*+*+*"`. An empty `package.json` at the repo root breaks esbuild.
+
+Zone security rules for `api.requiem.moe` (dashboard, free plan): block methods other than `GET`/`POST`/`PUT`/`DELETE`/`OPTIONS`, block paths other than `/views`, `/qa` and `/qa/*`, block requests without `origin: https://requiem.moe` except paths starting with `/qa/` (the poster sends no origin; disable while debugging), rate limit 20 req / 10 s per IP. Don't use Under Attack mode; its JS challenge breaks `fetch`.
 
 ## webring
 

@@ -178,7 +178,7 @@
 
   (repoCache && Date.now() - repoCache.at < 600000
     ? Promise.resolve(repoCache.rows)
-    : fetch('https://api.github.com/users/SevensRequiem/repos?sort=pushed&per_page=4')
+    : fetch('https://api.github.com/users/SevensRequiem/repos?sort=pushed&per_page=3')
         .then(json)
         .then(function (repos) {
           return Promise.all(
@@ -305,6 +305,87 @@
     });
   lightbox.addEventListener('click', function (e) {
     if (e.target === lightbox) lightbox.close();
+  });
+
+  var QA_API = 'https://api.requiem.moe/qa';
+  var qaDialog = document.getElementById('qa-dialog');
+  var qaLatest = document.getElementById('qa-latest');
+  var qaList = document.getElementById('qa-list');
+  var qaMore = document.getElementById('qa-more');
+  var qaForm = document.getElementById('qa-form');
+  var qaStatus = document.getElementById('qa-status');
+  var qaNext = null;
+
+  function qaEntry(item) {
+    var entry = el('article', 'qa-entry');
+    entry.append(
+      el('p', 'qa-question', item.question),
+      el('p', 'qa-answer', item.answer),
+      el('span', 'entry-tag', item.answered.slice(0, 10).replace(/-/g, '.'))
+    );
+    return entry;
+  }
+
+  function loadQa() {
+    return fetch(qaNext ? QA_API + '?before=' + qaNext : QA_API)
+      .then(json)
+      .then(function (page) {
+        qaNext = page.next;
+        qaMore.hidden = !page.next;
+        qaList.append.apply(qaList, page.items.map(qaEntry));
+        return page;
+      });
+  }
+
+  loadQa()
+    .then(function (page) {
+      document.getElementById('qa-count').textContent = String(page.total).padStart(2, '0') + ' answered';
+      qaLatest.replaceChildren(page.items.length ? qaEntry(page.items[0]) : el('span', 'entry-tag', 'nothing answered yet. ask away.'));
+    })
+    .catch(function () {
+      qaLatest.replaceChildren(el('span', 'entry-tag', 'signal lost: the q&a is not answering.'));
+    });
+
+  document.getElementById('qa-open').addEventListener('click', function () {
+    qaDialog.showModal();
+  });
+  qaDialog.addEventListener('click', function (e) {
+    if (e.target === qaDialog) qaDialog.close();
+  });
+  qaMore.addEventListener('click', function () {
+    qaMore.disabled = true;
+    loadQa()
+      .catch(function () {
+        qaStatus.textContent = 'signal lost: could not load older answers.';
+      })
+      .finally(function () {
+        qaMore.disabled = false;
+      });
+  });
+  qaForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var send = document.getElementById('qa-send');
+    send.disabled = true;
+    qaStatus.textContent = 'transmitting...';
+    fetch(QA_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question: qaForm.elements.question.value, website: qaForm.elements.website.value }),
+    })
+      .then(function (res) {
+        if (res.status === 429) return 'too many questions, try again in a minute.';
+        if (!res.ok) return 'signal lost: the question did not go through.';
+        qaForm.reset();
+        return 'received. it shows up below once answered.';
+      }, function () {
+        return 'signal lost: the question did not go through.';
+      })
+      .then(function (message) {
+        qaStatus.textContent = message;
+      })
+      .finally(function () {
+        send.disabled = false;
+      });
   });
 
   var viewsNote = document.getElementById('views');

@@ -40,6 +40,7 @@ var uiFiles embed.FS
 var (
 	slugRe   = regexp.MustCompile(`[^a-z0-9]+`)
 	markupRe = regexp.MustCompile("<[^>]*>|[#*`]")
+	qaClient = &http.Client{Timeout: 10 * time.Second}
 )
 
 type blogEntry struct {
@@ -93,6 +94,23 @@ func main() {
 			os.Exit(1)
 		}
 		return
+	}
+	// poster/.env keeps QA_TOKEN across restarts; variables already in the
+	// environment win so a one-off override still works.
+	if raw, err := os.ReadFile("poster/.env"); err == nil {
+		for line := range strings.Lines(string(raw)) {
+			key, value, ok := strings.Cut(strings.TrimSpace(line), "=")
+			key = strings.TrimSpace(key)
+			if !ok || key == "" || strings.HasPrefix(key, "#") {
+				continue
+			}
+			if _, set := os.LookupEnv(key); !set {
+				_ = os.Setenv(key, strings.Trim(strings.TrimSpace(value), `"'`))
+			}
+		}
+	} else if !errors.Is(err, os.ErrNotExist) {
+		fmt.Fprintln(os.Stderr, "read poster/.env:", err)
+		os.Exit(1)
 	}
 	if _, err := exec.LookPath("magick"); err != nil {
 		fmt.Fprintln(os.Stderr, "magick (ImageMagick 7) is required for webp conversion")
@@ -158,6 +176,9 @@ func main() {
 	})
 	mux.HandleFunc("POST /blog", guard(postBlog))
 	mux.HandleFunc("POST /gallery", guard(postGallery))
+	mux.HandleFunc("GET /qa/inbox", guard(proxyQA))
+	mux.HandleFunc("PUT /qa/{id}", guard(proxyQA))
+	mux.HandleFunc("DELETE /qa/{id}", guard(proxyQA))
 
 	srv := &http.Server{Handler: mux, ReadHeaderTimeout: 5 * time.Second}
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
@@ -359,6 +380,41 @@ func postGallery(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	reply(w, http.StatusOK, "done", "written to "+dir+publish(r, dir, "gallery/index.json"))
+}
+
+// proxyQA forwards Q&A moderation to the worker so the admin token stays in
+// the poster's environment instead of the browser. QA_API points it at
+// `wrangler dev` for local testing.
+func proxyQA(w http.ResponseWriter, r *http.Request) {
+	token := os.Getenv("QA_TOKEN")
+	if token == "" {
+		reply(w, http.StatusServiceUnavailable, "error", "set QA_TOKEN to the worker's secret and restart the poster")
+		return
+	}
+	req, err := http.NewRequestWithContext(r.Context(), r.Method, cmp.Or(os.Getenv("QA_API"), "https://api.requiem.moe")+r.URL.Path, r.Body)
+	if err != nil {
+		fail(w, "build api request", err)
+		return
+	}
+	req.Header.Set("Authorization", "Bearer "+token)
+	req.Header.Set("Content-Type", "application/json")
+	res, err := qaClient.Do(req)
+	if err != nil {
+		fail(w, "reach api", err)
+		return
+	}
+	defer res.Body.Close()
+	body, err := io.ReadAll(io.LimitReader(res.Body, 4<<20))
+	if err != nil {
+		fail(w, "read api reply", err)
+		return
+	}
+	if res.StatusCode != http.StatusOK {
+		reply(w, http.StatusBadGateway, "error", fmt.Sprintf("api answered %d: %s", res.StatusCode, bytes.TrimSpace(body)))
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	_, _ = w.Write(body)
 }
 
 // convert re-encodes any image ImageMagick can read as webp, dropping EXIF

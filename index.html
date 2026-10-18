@@ -204,6 +204,17 @@
           <a href="https://github.com/SevensRequiem" target="_blank" rel="noopener noreferrer" class="panel-link">all repos</a>
         </section>
 
+        <section class="entry-card qa-card">
+          <header class="entry-head">
+            <h2 class="panel-title">::ASK</h2>
+            <span class="entry-tag" id="qa-count">anonymous</span>
+          </header>
+          <div class="qa-latest" id="qa-latest">
+            <span class="entry-tag">receiving...</span>
+          </div>
+          <button class="panel-link" type="button" id="qa-open" aria-haspopup="dialog" aria-controls="qa-dialog">ask / read all</button>
+        </section>
+
         <section class="entry-card webring-card">
           <header class="entry-head">
             <h2 class="panel-title">::WEBRING</h2>
@@ -223,6 +234,28 @@
         <p class="entry-para" id="lightbox-caption"></p>
         <footer class="post-foot">
           <span class="entry-tag" id="lightbox-meta"></span>
+          <form method="dialog"><button class="panel-link">close</button></form>
+        </footer>
+      </div>
+    </dialog>
+
+    <dialog class="lightbox qa-box" id="qa-dialog" aria-labelledby="qa-title">
+      <div class="lightbox-body">
+        <header class="entry-head">
+          <h2 class="panel-title" id="qa-title">::ASK ANONYMOUSLY</h2>
+          <span class="entry-tag">only the question is stored</span>
+        </header>
+        <form class="qa-form" id="qa-form">
+          <textarea class="qa-input" name="question" maxlength="500" rows="3" required placeholder="ask me anything..." aria-label="your question"></textarea>
+          <label class="qa-trap" aria-hidden="true">website<input name="website" tabindex="-1" autocomplete="off" /></label>
+          <div class="post-foot">
+            <span class="entry-tag" id="qa-status" role="status">shows up below once answered</span>
+            <button class="panel-link" id="qa-send">send</button>
+          </div>
+        </form>
+        <div class="qa-list" id="qa-list"></div>
+        <footer class="post-foot">
+          <button class="panel-link" type="button" id="qa-more" hidden>older</button>
           <form method="dialog"><button class="panel-link">close</button></form>
         </footer>
       </div>

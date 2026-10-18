@@ -82,8 +82,33 @@ body {
   backdrop-filter: blur(10px);
 }
 
-.post-form[hidden] {
+.post-form[hidden],
+.workspace[hidden],
+.qa-inbox[hidden] {
   display: none;
+}
+
+.qa-inbox,
+.qa-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.qa-pending {
+  border-left-color: var(--accent-pink);
+}
+
+.qa-question {
+  margin: 0;
+  color: var(--accent-teal);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.qa-answer {
+  min-height: 90px;
+  resize: vertical;
 }
 
 .preview-card {

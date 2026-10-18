@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/fs"
 	"mime/multipart"
 	"net/http"
@@ -426,6 +427,45 @@ func TestPosterGuardRejectsUnauthorizedWrites(t *testing.T) {
 	}
 	if after := testTree(t, "blog"); !reflect.DeepEqual(after, before) {
 		t.Error("unauthorized request changed the blog")
+	}
+}
+
+func TestProxyQA(t *testing.T) {
+	var got struct{ method, path, auth, body string }
+	api := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		body, _ := io.ReadAll(r.Body)
+		got.method, got.path, got.auth, got.body = r.Method, r.URL.Path, r.Header.Get("Authorization"), string(body)
+		if r.URL.Path == "/qa/9" {
+			http.Error(w, "not found", http.StatusNotFound)
+			return
+		}
+		fmt.Fprint(w, `{"done":"answered"}`)
+	}))
+	defer api.Close()
+	t.Setenv("QA_API", api.URL)
+
+	t.Setenv("QA_TOKEN", "")
+	res := httptest.NewRecorder()
+	proxyQA(res, httptest.NewRequest("GET", "/qa/inbox", nil))
+	if res.Code != http.StatusServiceUnavailable || got.method != "" {
+		t.Fatalf("without a token: %d %s, api saw %q", res.Code, res.Body.String(), got.method)
+	}
+
+	t.Setenv("QA_TOKEN", "secret")
+	res = httptest.NewRecorder()
+	proxyQA(res, httptest.NewRequest("PUT", "/qa/3", strings.NewReader(`{"answer":"hi"}`)))
+	if res.Code != http.StatusOK || res.Body.String() != `{"done":"answered"}` {
+		t.Errorf("answer: %d %s", res.Code, res.Body.String())
+	}
+	if got.method != "PUT" || got.path != "/qa/3" || got.auth != "Bearer secret" || got.body != `{"answer":"hi"}` {
+		t.Errorf("api saw %+v", got)
+	}
+
+	res = httptest.NewRecorder()
+	proxyQA(res, httptest.NewRequest("DELETE", "/qa/9", nil))
+	var out map[string]string
+	if err := json.Unmarshal(res.Body.Bytes(), &out); err != nil || res.Code != http.StatusBadGateway || out["error"] != "api answered 404: not found" {
+		t.Errorf("api error: %d %s", res.Code, res.Body.String())
 	}
 }
 

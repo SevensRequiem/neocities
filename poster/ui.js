@@ -78,15 +78,120 @@
     if (file) previewImg.src = URL.createObjectURL(file);
   }
 
+  var workspace = document.querySelector('.workspace');
+  var qaTab = document.getElementById('tab-qa');
+  var qaInbox = document.getElementById('qa-inbox');
+  var qaItems = document.getElementById('qa-items');
+
   tabs.forEach(function (tab, i) {
     tab.addEventListener('click', function () {
       tabs.forEach(function (t, j) {
         t.setAttribute('aria-selected', i === j);
         forms[j].hidden = i !== j;
       });
+      qaTab.setAttribute('aria-selected', false);
+      qaInbox.hidden = true;
+      workspace.hidden = false;
       renderPreview();
     });
   });
+
+  function qaRequest(method, path, body) {
+    return fetch(path, {
+      method: method,
+      headers: { 'X-Poster-Token': token },
+      body: body && JSON.stringify(body)
+    })
+      .then(function (res) {
+        return res.json();
+      })
+      .then(function (out) {
+        if (out.error) throw new Error(out.error);
+        return out;
+      });
+  }
+
+  function qaFail(err) {
+    statusLine.className = 'status-line status-error';
+    statusLine.textContent = 'signal lost: ' + err.message;
+  }
+
+  function qaItem(item) {
+    var form = document.createElement('form');
+    form.className = 'post-form qa-item' + (item.answered ? '' : ' qa-pending');
+    var question = document.createElement('p');
+    question.className = 'qa-question';
+    question.textContent = item.question;
+    var meta = document.createElement('span');
+    meta.className = 'field-label';
+    meta.textContent = 'asked ' + item.asked.slice(0, 16).replace('T', ' ') + (item.answered ? ' :: answered ' + item.answered.slice(0, 16).replace('T', ' ') : ' :: pending');
+    var answer = document.createElement('textarea');
+    answer.className = 'field-input qa-answer';
+    answer.maxLength = 4000;
+    answer.required = true;
+    answer.value = item.answer || '';
+    answer.setAttribute('aria-label', 'answer');
+    var save = document.createElement('button');
+    save.className = 'submit-btn';
+    save.textContent = item.answered ? 'update' : 'answer';
+    var remove = document.createElement('button');
+    remove.type = 'button';
+    remove.className = 'tag-chip';
+    remove.textContent = 'delete';
+    var row = document.createElement('div');
+    row.className = 'tag-row';
+    row.append(save, remove);
+    form.append(question, meta, answer, row);
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      save.disabled = true;
+      qaRequest('PUT', '/qa/' + item.id, { answer: answer.value })
+        .then(function (out) {
+          statusLine.className = 'status-line';
+          statusLine.textContent = out.done;
+          loadInbox();
+        })
+        .catch(qaFail)
+        .finally(function () {
+          save.disabled = false;
+        });
+    });
+    remove.addEventListener('click', function () {
+      if (remove.textContent === 'delete') {
+        remove.textContent = 'really delete';
+        return;
+      }
+      qaRequest('DELETE', '/qa/' + item.id)
+        .then(function (out) {
+          statusLine.className = 'status-line';
+          statusLine.textContent = out.done;
+          form.remove();
+        })
+        .catch(qaFail);
+    });
+    return form;
+  }
+
+  function loadInbox() {
+    qaRequest('GET', '/qa/inbox')
+      .then(function (items) {
+        qaItems.replaceChildren.apply(qaItems, items.map(qaItem));
+        if (!items.length) qaItems.textContent = 'no questions yet.';
+      })
+      .catch(qaFail);
+  }
+
+  qaTab.addEventListener('click', function () {
+    tabs.forEach(function (t) {
+      t.setAttribute('aria-selected', false);
+    });
+    qaTab.setAttribute('aria-selected', true);
+    workspace.hidden = true;
+    qaInbox.hidden = false;
+    loadInbox();
+  });
+  document.getElementById('qa-refresh').addEventListener('click', loadInbox);
 
   forms.forEach(function (form) {
     form.addEventListener('input', renderPreview);

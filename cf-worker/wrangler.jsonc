@@ -40,6 +40,14 @@
 				"limit": 1200,
 				"period": 60
 			}
+		},
+		{
+			"name": "ASK",
+			"namespace_id": "1003",
+			"simple": {
+				"limit": 3,
+				"period": 60
+			}
 		}
 	],
 	"observability": {
