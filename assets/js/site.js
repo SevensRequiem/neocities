@@ -171,44 +171,74 @@
     return a;
   }
 
-  fetch('https://api.github.com/users/SevensRequiem/repos?sort=pushed&per_page=4')
-    .then(json)
-    .then(function (repos) {
-      return Promise.all(
-        repos.map(function (repo) {
-          return fetch(repo.url + '/commits/' + repo.default_branch)
-            .then(json)
-            .catch(function () {
-              return null;
+  var repoCache = null;
+  try {
+    repoCache = JSON.parse(sessionStorage.getItem('gh-repos'));
+  } catch (e) {}
+
+  (repoCache && Date.now() - repoCache.at < 600000
+    ? Promise.resolve(repoCache.rows)
+    : fetch('https://api.github.com/users/SevensRequiem/repos?sort=pushed&per_page=4')
+        .then(json)
+        .then(function (repos) {
+          return Promise.all(
+            repos.map(function (repo) {
+              return fetch(repo.url + '/commits/' + repo.default_branch)
+                .then(json)
+                .then(function (commit) {
+                  return {
+                    message: commit.commit.message.split('\n')[0],
+                    url: commit.html_url,
+                    additions: commit.stats.additions,
+                    deletions: commit.stats.deletions,
+                    files: commit.files.length,
+                  };
+                })
+                .catch(function () {
+                  return null;
+                })
+                .then(function (commit) {
+                  return {
+                    name: repo.name,
+                    url: repo.html_url,
+                    pushed: repo.pushed_at,
+                    stars: repo.stargazers_count,
+                    forks: repo.forks_count,
+                    language: repo.language,
+                    commit: commit,
+                  };
+                });
             })
-            .then(function (commit) {
-              return { repo: repo, commit: commit };
-            });
+          );
         })
-      );
-    })
+        .then(function (rows) {
+          try {
+            sessionStorage.setItem('gh-repos', JSON.stringify({ at: Date.now(), rows: rows }));
+          } catch (e) {}
+          return rows;
+        })
+  )
     .then(function (rows) {
-      var items = rows.map(function (row) {
-        var repo = row.repo;
-        var hours = (Date.now() - Date.parse(repo.pushed_at)) / 3600000;
+      var items = rows.map(function (repo) {
+        var hours = (Date.now() - Date.parse(repo.pushed)) / 3600000;
         var age = hours < 1 ? 'now' : hours < 24 ? Math.floor(hours) + 'h' : Math.floor(hours / 24) + 'd';
         var item = el('li', 'repo');
         var head = el('div', 'repo-head');
         head.append(
-          link('repo-name', repo.name, repo.html_url),
-          el('span', 'entry-tag', '★ ' + repo.stargazers_count + ' / ' + age)
+          link('repo-name', repo.name, repo.url),
+          el('span', 'entry-tag', '★ ' + repo.stars + ' / ' + age)
         );
         item.append(head);
-        if (repo.language) item.append(el('span', 'entry-tag', repo.language.toLowerCase() + ' / ' + repo.forks_count + ' forks'));
-        if (row.commit) {
+        if (repo.language) item.append(el('span', 'entry-tag', repo.language.toLowerCase() + ' / ' + repo.forks + ' forks'));
+        if (repo.commit) {
           var diff = el('span', 'entry-tag');
           diff.append(
-            el('span', 'diff-add', '+' + row.commit.stats.additions),
+            el('span', 'diff-add', '+' + repo.commit.additions),
             ' ',
-            el('span', 'diff-del', '-' + row.commit.stats.deletions),
-            ' / ' + row.commit.files.length + (row.commit.files.length === 1 ? ' file' : ' files')
+            el('span', 'diff-del', '-' + repo.commit.deletions),
+            ' / ' + repo.commit.files + (repo.commit.files === 1 ? ' file' : ' files')
           );
-          item.append(link('repo-commit', row.commit.commit.message.split('\n')[0], row.commit.html_url), diff);
+          item.append(link('repo-commit', repo.commit.message, repo.commit.url), diff);
         }
         return item;
       });
@@ -291,17 +321,4 @@
     .catch(function () {
       viewsNote.textContent = 'views: signal lost';
     });
-
-  var fpsNote = document.getElementById('fps');
-  var fpsFrames = 0;
-  var fpsSince = performance.now();
-  requestAnimationFrame(function tick(now) {
-    fpsFrames++;
-    if (now - fpsSince >= 1000) {
-      fpsNote.textContent = Math.round((fpsFrames * 1000) / (now - fpsSince)) + ' fps';
-      fpsFrames = 0;
-      fpsSince = now;
-    }
-    requestAnimationFrame(tick);
-  });
 })();

@@ -51,7 +51,6 @@ button {
   inset: 0;
   z-index: var(--z-scanlines);
   pointer-events: none;
-  mix-blend-mode: multiply;
   background: repeating-linear-gradient(180deg, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 2px, rgba(0, 0, 0, 0.2) 3px);
 }
 
@@ -156,6 +155,7 @@ body::after {
   letter-spacing: 0;
   white-space: pre;
   pointer-events: none;
+  contain: layout paint;
   text-shadow: 0 0 6px currentColor;
 }
 
@@ -180,6 +180,67 @@ body::after {
   .cloud {
     display: none;
   }
+}
+
+@keyframes static-jitter {
+  0%, 100% { transform: translate(-37px, -91px); }
+  12.5% { transform: translate(-102px, -14px); }
+  25% { transform: translate(-8px, -63px); }
+  37.5% { transform: translate(-71px, -120px); }
+  50% { transform: translate(-115px, -45px); }
+  62.5% { transform: translate(-22px, -7px); }
+  75% { transform: translate(-89px, -77px); }
+  87.5% { transform: translate(-54px, -29px); }
+}
+
+html[data-fx~='1'] #static-overlay {
+  inset: -128px;
+  background-image: url('../img/static-still.png');
+  animation:
+    static-jitter 0.4s steps(1) infinite,
+    static-breathe 12s ease-in-out infinite;
+}
+
+html[data-fx~='1'] .cloud {
+  text-shadow: none;
+}
+
+html[data-fx~='1'] .flag-subtext,
+html[data-fx~='1'] .ring-track span {
+  animation-play-state: paused;
+}
+
+html[data-fx~='2'] #static-overlay {
+  inset: 0;
+  animation: none;
+}
+
+html[data-fx~='2'] body::after {
+  animation: none;
+}
+
+html[data-fx~='2'] .flag-col span {
+  animation-play-state: paused;
+}
+
+html[data-fx~='2'] {
+  --bg-card: rgba(8, 10, 18, 0.9);
+}
+
+html[data-fx~='2'] .info-panel,
+html[data-fx~='2'] .entry-card {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+html[data-fx~='3'] #static-overlay {
+  display: none;
+}
+
+html[data-fx~='3'] *,
+html[data-fx~='3'] ::before,
+html[data-fx~='3'] ::after {
+  animation-play-state: paused !important;
 }
 
 body[data-motion='paused'] #static-overlay {

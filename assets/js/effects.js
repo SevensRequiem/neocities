@@ -3,8 +3,10 @@
   var coarsePointerQuery = window.matchMedia('(pointer: coarse)');
   var clouds = document.querySelectorAll('.cloud');
   var staticOverlay = document.getElementById('static-overlay');
+  var fpsNote = document.getElementById('fps');
   var cloudRamp = '.:-=+*#%@';
   var cloudTimer = 0;
+  var cloudRate = 0;
   var cloudSize = '';
   var trailsEnabled = false;
   var ghostCount = 16;
@@ -14,7 +16,30 @@
   var ghostIdx = 0;
   var lastGhostTime = 0;
   var ghostSrc = new URL('../cursors/arrow.png', document.currentScript.src).href;
+  var staticStill = "url('" + new URL('../img/static-still.png', document.currentScript.src).href + "')";
   var ghostRafId = 0;
+  var fxTarget = 40;
+  var fxMax = 3;
+  var fxTier = 0;
+  var fxLocked = false;
+  var fxSeen = [];
+  var fxBad = 0;
+  var fxSettle = 1;
+  var fxFrames = 0;
+  var fxSince = 0;
+  var fxLast = 0;
+
+  try {
+    fxTier = Math.min(Number(sessionStorage.getItem('fx-tier')) || 0, fxMax);
+    fxLocked = sessionStorage.getItem('fx-lock') === '1';
+  } catch (e) {}
+  document.documentElement.dataset.fx = fxLevels(fxTier);
+
+  function fxLevels(tier) {
+    var levels = [];
+    for (var i = 1; i <= tier; i++) levels.push(i);
+    return levels.join(' ');
+  }
 
   function cloudHash(x, y) {
     var n = Math.sin(x * 127.1 + y * 311.7) * 43758.5453;
@@ -124,7 +149,7 @@
     var motion = document.body.dataset.motion;
     var animate = !document.hidden && (motion === 'running' || (motion !== 'paused' && !motionQuery.matches));
     var wide = innerWidth > 1320 && clouds.length === 2;
-    trailsEnabled = animate && !coarsePointerQuery.matches && !document.body.classList.contains('low-fx');
+    trailsEnabled = animate && !coarsePointerQuery.matches && fxTier === 0;
 
     if (!trailsEnabled) {
       if (ghostRafId) cancelAnimationFrame(ghostRafId);
@@ -137,12 +162,14 @@
 
     if (staticOverlay) {
       staticOverlay.style.animationPlayState = document.hidden ? 'paused' : '';
-      staticOverlay.style.backgroundImage = document.hidden ? "url('./assets/img/static-still.png')" : '';
+      staticOverlay.style.backgroundImage = document.hidden ? staticStill : '';
     }
 
-    if (!animate || !wide) {
-      if (cloudTimer) clearInterval(cloudTimer);
-      cloudTimer = 0;
+    var rate = animate && wide && fxTier < 2 ? (fxTier ? 250 : 125) : 0;
+    if (rate !== cloudRate) {
+      clearInterval(cloudTimer);
+      cloudTimer = rate && setInterval(drawClouds, rate);
+      cloudRate = rate;
     }
     if (!wide || document.hidden) return;
 
@@ -151,7 +178,50 @@
       drawClouds();
       cloudSize = size;
     }
-    if (animate && !cloudTimer) cloudTimer = setInterval(drawClouds, 125);
+  }
+
+  function setFx(tier) {
+    fxTier = tier;
+    fxSettle = 1;
+    fxBad = 0;
+    document.documentElement.dataset.fx = fxLevels(tier);
+    try {
+      sessionStorage.setItem('fx-tier', tier);
+      if (fxLocked) sessionStorage.setItem('fx-lock', '1');
+    } catch (e) {}
+    syncEffects();
+    document.dispatchEvent(new CustomEvent('fxchange', { detail: tier }));
+  }
+
+  function measureFx(now) {
+    requestAnimationFrame(measureFx);
+    if (now - fxLast > 1000) {
+      fxSince = now;
+      fxFrames = 0;
+    }
+    fxLast = now;
+    fxFrames++;
+    if (now - fxSince < 2000) return;
+    var fps = (fxFrames * 1000) / (now - fxSince);
+    fxSince = now;
+    fxFrames = 0;
+    if (fpsNote) fpsNote.textContent = Math.round(fps) + ' fps / fx ' + fxTier;
+    if (fxSettle) {
+      fxSettle--;
+      return;
+    }
+    if (fxLocked || fps >= fxTarget) {
+      fxBad = 0;
+      return;
+    }
+    if (++fxBad < 2) return;
+    fxSeen[fxTier] = fps;
+    if (fxTier < fxMax) return setFx(fxTier + 1);
+    var best = Math.max.apply(null, fxSeen.filter(Number));
+    fxLocked = true;
+    setFx(fxSeen.findIndex(function (seen) {
+      return seen >= best - 2;
+    }));
   }
 
   motionQuery.addEventListener('change', syncEffects);
@@ -160,7 +230,8 @@
   addEventListener('resize', syncEffects);
   new MutationObserver(syncEffects).observe(document.body, {
     attributes: true,
-    attributeFilter: ['data-motion', 'class'],
+    attributeFilter: ['data-motion'],
   });
   syncEffects();
+  requestAnimationFrame(measureFx);
 })();

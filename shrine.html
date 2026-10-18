@@ -11,6 +11,7 @@
     <meta property="og:title" content="a shrine to XaTuring :: Requiem" />
     <meta property="og:description" content="A node in the expanding web. A small light in the data sea." />
     <meta property="og:url" content="https://requiem.moe/shrine.html" />
+    <link rel="preload" href="./assets/fonts/DepartureMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="./assets/css/effects.css" />
     <style>
       @font-face {
@@ -336,6 +337,8 @@
         let paused = reduced.matches;
         let visible = true;
         let spark = 0;
+        let trail = 24;
+        let motes = dust.length;
 
         const sprite = (hue, x, y, size, alpha) => {
           ctx.globalAlpha = Math.min(1, alpha);
@@ -369,7 +372,8 @@
           ctx.restore();
           ctx.globalCompositeOperation = 'lighter';
 
-          for (const mote of dust) {
+          for (let m = 0; m < motes; m++) {
+            const mote = dust[m];
             const y = ((mote.y - time * .009 * mote.depth) % 1 + 1) % 1;
             const x = (mote.x + Math.sin(time * .2 + mote.phase) * .01) * width;
             const shimmer = .5 + .5 * Math.sin(time * .8 + mote.phase);
@@ -378,12 +382,12 @@
 
           sprite(155, cx, cy, base * 1.7, .16 + spark * .25);
           for (let i = 0; i < 7; i++) {
-            for (let k = 23; k >= 0; k--) {
-              const t = time - k * .022;
+            for (let k = trail - 1; k >= 0; k--) {
+              const t = time - k * .528 / trail;
               const angle = t * .6 + i / 7 * tau;
               const radius = base * (1.04 + .06 * Math.sin(t * .4));
               const [x, y, scale] = project(angle, radius, .48 + Math.sin(t * .16) * .25, t * .09, cx, cy);
-              const fade = 1 - k / 24;
+              const fade = 1 - k / trail;
               const hue = i / 7 * 360 + time * 12;
               sprite(hue, x, y, base * .42 * scale * (.4 + fade * .6), fade * fade * (k ? .42 : .95));
               if (k === 0) {
@@ -410,7 +414,10 @@
           const rect = canvas.getBoundingClientRect();
           width = rect.width;
           height = rect.height;
-          dpr = Math.min(devicePixelRatio || 1, 2);
+          const fx = document.documentElement.dataset.fx;
+          dpr = Math.min(devicePixelRatio || 1, fx.includes('2') ? 1 : 2);
+          trail = fx.includes('3') ? 8 : 24;
+          motes = fx.includes('3') ? 30 : dust.length;
           canvas.width = Math.round(width * dpr);
           canvas.height = Math.round(height * dpr);
           base = Math.min(width * .29, height * .29);
@@ -479,6 +486,7 @@
           draw();
         });
         document.addEventListener('visibilitychange', syncMotion);
+        document.addEventListener('fxchange', resize);
         new IntersectionObserver(([entry]) => {
           visible = entry.isIntersecting;
           syncMotion();
