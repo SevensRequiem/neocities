@@ -106,6 +106,31 @@
       var body = el('div', 'memo-body');
       body.innerHTML = memo.html;
       strip.append(head, body);
+      (memo.videos || []).forEach(function (video) {
+        var frame = el('div', 'mosaic-frame video-frame memo-video');
+        var play = el('a', 'video-play');
+        play.href = 'https://www.youtube.com/watch?v=' + video.id + (video.start ? '&t=' + video.start + 's' : '');
+        play.target = '_blank';
+        play.rel = 'noopener noreferrer';
+        play.setAttribute('aria-label', 'play video');
+        var thumb = el('img', 'mosaic-img');
+        thumb.src = 'https://i.ytimg.com/vi/' + video.id + '/hqdefault.jpg';
+        thumb.alt = '';
+        thumb.loading = 'lazy';
+        play.append(thumb, el('span', 'video-glyph', '►'));
+        play.addEventListener('click', function (e) {
+          e.preventDefault();
+          var player = document.createElement('iframe');
+          player.src = 'https://www.youtube-nocookie.com/embed/' + video.id + '?autoplay=1' + (video.start ? '&start=' + video.start : '');
+          player.title = 'youtube video';
+          player.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+          player.allowFullscreen = true;
+          player.referrerPolicy = 'strict-origin-when-cross-origin';
+          play.replaceWith(player);
+        });
+        frame.append(play);
+        strip.append(frame);
+      });
       return strip;
     });
   }

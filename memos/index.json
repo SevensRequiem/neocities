@@ -3,7 +3,12 @@
     "id": 2,
     "date": "2026-10-22T22:43:41Z",
     "body": "made something i thought was cool, check it out:\n\nhttps://www.youtube.com/watch?v=IccBvQ2p9Mc",
-    "html": "<p>made something i thought was cool, check it out:</p>\n<p><a href=\"https://www.youtube.com/watch?v=IccBvQ2p9Mc\" rel=\"noreferrer noopener\" target=\"_blank\">https://www.youtube.com/watch?v=IccBvQ2p9Mc</a></p>\n"
+    "html": "<p>made something i thought was cool, check it out:</p>\n<p><a href=\"https://www.youtube.com/watch?v=IccBvQ2p9Mc\" rel=\"noreferrer noopener\" target=\"_blank\">https://www.youtube.com/watch?v=IccBvQ2p9Mc</a></p>\n",
+    "videos": [
+      {
+        "id": "IccBvQ2p9Mc"
+      }
+    ]
   },
   {
     "id": 1,

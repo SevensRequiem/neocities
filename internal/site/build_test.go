@@ -420,6 +420,43 @@ func TestWords(t *testing.T) {
 }
 
 // testSeed writes the empty story and memo data files a real site starts with.
+func TestBuildSite_MemoVideos(t *testing.T) {
+	tests := []struct {
+		name string
+		body string
+		want []Video
+	}{
+		{"watch", "https://www.youtube.com/watch?v=fsbikR9o8UI", []Video{{ID: "fsbikR9o8UI"}}},
+		{"watch with start and extra params", "[v](https://youtube.com/watch?list=x&v=fsbikR9o8UI&t=90)", []Video{{ID: "fsbikR9o8UI", Start: 90}}},
+		{"short link with duration", "https://youtu.be/fsbikR9o8UI?t=1m30s", []Video{{ID: "fsbikR9o8UI", Start: 90}}},
+		{"shorts, live, embed, mobile", "https://www.youtube.com/shorts/aaaaaaaaaaa https://youtube.com/live/bbbbbbbbbbb https://www.youtube-nocookie.com/embed/ccccccccccc https://m.youtube.com/watch?v=ddddddddddd", []Video{{ID: "aaaaaaaaaaa"}, {ID: "bbbbbbbbbbb"}, {ID: "ccccccccccc"}, {ID: "ddddddddddd"}}},
+		{"raw anchor", `<a href="https://youtu.be/fsbikR9o8UI">v</a>`, []Video{{ID: "fsbikR9o8UI"}}},
+		{"duplicate kept once", "https://youtu.be/fsbikR9o8UI and https://www.youtube.com/watch?v=fsbikR9o8UI", []Video{{ID: "fsbikR9o8UI"}}},
+		{"bad id shape", `https://youtu.be/short <a href="https://youtu.be/fsbikR9o8U%22x">v</a>`, nil},
+		{"other hosts and pages", "https://example.com/watch?v=fsbikR9o8UI https://evilyoutube.com/watch?v=fsbikR9o8UI https://www.youtube.com/@SevensRequiem", nil},
+		{"bad start ignored", "https://youtu.be/fsbikR9o8UI?t=-5", []Video{{ID: "fsbikR9o8UI"}}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Chdir(t.TempDir())
+			testSeed(t)
+			testWrite(t, "blog/index.json", "[]\n")
+			testWrite(t, "blog/all.json", "[]\n")
+			raw, err := json.Marshal([]Memo{{ID: 1, Date: "2026-01-01T00:00:00Z", Body: tt.body, Videos: []Video{{ID: "stale000000"}}}})
+			if err != nil {
+				t.Fatal(err)
+			}
+			testWrite(t, "memos/index.json", string(raw))
+			if _, err := BuildSite(); err != nil {
+				t.Fatal(err)
+			}
+			if got := testReadJSON[[]Memo](t, "memos/index.json")[0].Videos; !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("videos = %+v, want %+v", got, tt.want)
+			}
+		})
+	}
+}
+
 func testSeed(t *testing.T) {
 	t.Helper()
 	for _, dir := range []string{"blog", "stories", "memos"} {

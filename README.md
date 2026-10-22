@@ -6,6 +6,8 @@ my live neocities page & posting automation
 
 Memos are short asides (1-1000 characters of markdown) kept newest first in `memos/index.json`; the homepage places each one between the weblog posts around its timestamp. The build fills each memo's `html` from its `body`, so edit `body` and rebuild. That `html` is the same goldmark + bluemonday output the weblog pages carry, which is why `site.js` inserts it with `innerHTML`; nothing else on the homepage does. A memo sits directly before the first post older than it, so it never moves a post to another page: newer than every post puts it on top of page 1, older than every post puts it at the end of the last page. `#memo-N` opens the page holding memo N and scrolls to it; `#stories` opens the stories tab.
 
+YouTube links in a memo (watch, `youtu.be`, shorts, live and embed URLs, with an optional `t=` start) also land in its derived `videos` list, one entry per video id. `site.js` shows each as a thumbnail under the memo and swaps in a `youtube-nocookie.com` player on click, so YouTube gets no request until a reader plays it. The poster's live preview does not show them; its CSP blocks external images.
+
 Post a memo from the poster's `memo` tab: body, live preview, commit/push checkboxes. It commits as `memo: NNN`.
 
 `index.html` on `file://` shows "signal lost" (fetch is blocked); use the poster's `view site` link. Tick `git commit` / `git push` in the form; pushing `main` deploys everything except `poster/`, `internal/`, `writer/`, `cf-worker/` and `webring/`.

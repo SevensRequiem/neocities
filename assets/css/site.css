@@ -1191,11 +1191,11 @@ button.panel-link {
   border-left-color: var(--lcd-rose);
 }
 
-.pinned-frame {
+.video-frame {
   aspect-ratio: 16 / 9;
 }
 
-.pinned-play {
+.video-play {
   position: relative;
   display: block;
   width: 100%;
@@ -1203,7 +1203,7 @@ button.panel-link {
   background: var(--bg-darker);
 }
 
-.pinned-glyph {
+.video-glyph {
   position: absolute;
   inset: 0;
   display: flex;
@@ -1216,8 +1216,8 @@ button.panel-link {
   transition: background 0.3s ease;
 }
 
-.pinned-play:hover .pinned-glyph,
-.pinned-play:focus-visible .pinned-glyph {
+.video-play:hover .video-glyph,
+.video-play:focus-visible .video-glyph {
   background: transparent;
 }
 
@@ -1606,6 +1606,17 @@ button.panel-link {
   display: block;
   max-width: 100%;
   height: auto;
+}
+
+.memo-video {
+  max-width: 420px;
+}
+
+.memo-video iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
 }
 
 .memo-body hr {

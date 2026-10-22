@@ -9,8 +9,10 @@ import (
 	"fmt"
 	"html"
 	"html/template"
+	"net/url"
 	"os"
 	"path/filepath"
+	"regexp"
 	"slices"
 	"strings"
 	"time"
@@ -36,6 +38,9 @@ var (
 			RequireNoReferrerOnFullyQualifiedLinks(true).
 			AddTargetBlankToFullyQualifiedLinks(true)
 	textOnly = bluemonday.StrictPolicy().AddSpaceWhenStrippingTag(true)
+	// Matched against sanitizer output, which always double-quotes attributes.
+	hrefPattern    = regexp.MustCompile(`<a href="([^"]+)"`)
+	youtubeIDShape = regexp.MustCompile(`^[A-Za-z0-9_-]{11}$`)
 )
 
 type pageData struct {
@@ -382,6 +387,40 @@ func BuildSite() ([]string, error) {
 			return nil, fmt.Errorf("memos/index.json: memo %d: render markdown: %w", m.ID, err)
 		}
 		memos[n].HTML = string(body)
+		memos[n].Videos = nil
+		// Watch, youtu.be, shorts, live and embed links each become a video.
+		for _, href := range hrefPattern.FindAllSubmatch(body, -1) {
+			u, err := url.Parse(html.UnescapeString(string(href[1])))
+			if err != nil || (u.Scheme != "https" && u.Scheme != "http") {
+				continue
+			}
+			var id string
+			segs := strings.Split(strings.Trim(u.Path, "/"), "/")
+			switch strings.TrimPrefix(u.Hostname(), "www.") {
+			case "youtu.be":
+				id = segs[0]
+			case "youtube.com", "m.youtube.com", "music.youtube.com", "youtube-nocookie.com":
+				switch {
+				case segs[0] == "watch":
+					id = u.Query().Get("v")
+				case len(segs) == 2 && (segs[0] == "shorts" || segs[0] == "live" || segs[0] == "embed"):
+					id = segs[1]
+				}
+			}
+			if !youtubeIDShape.MatchString(id) || slices.ContainsFunc(memos[n].Videos, func(seen Video) bool { return seen.ID == id }) {
+				continue
+			}
+			v := Video{ID: id}
+			// t=90, t=90s and t=1m30s all appear in shared links.
+			t := cmp.Or(u.Query().Get("t"), u.Query().Get("start"))
+			if t != "" && strings.Trim(t, "0123456789") == "" {
+				t += "s"
+			}
+			if d, err := time.ParseDuration(t); err == nil && d > 0 {
+				v.Start = int(d.Seconds())
+			}
+			memos[n].Videos = append(memos[n].Videos, v)
+		}
 	}
 	var memoJSON bytes.Buffer
 	enc := json.NewEncoder(&memoJSON)

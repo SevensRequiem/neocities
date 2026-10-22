@@ -92,13 +92,21 @@ type StoryEntry struct {
 	Image   string   `json:"image"`
 }
 
-// Memo is one element of memos/index.json. HTML is derived from Body by
-// BuildSite, so hand edits only need to touch Body.
+// Memo is one element of memos/index.json. HTML and Videos are derived from
+// Body by BuildSite, so hand edits only need to touch Body.
 type Memo struct {
-	ID   int    `json:"id"`
-	Date string `json:"date"`
-	Body string `json:"body"`
-	HTML string `json:"html"`
+	ID     int     `json:"id"`
+	Date   string  `json:"date"`
+	Body   string  `json:"body"`
+	HTML   string  `json:"html"`
+	Videos []Video `json:"videos,omitempty"`
+}
+
+// Video is a YouTube video a memo links to. ID is checked against the 11
+// character id alphabet because site.js puts it into thumbnail and embed URLs.
+type Video struct {
+	ID    string `json:"id"`
+	Start int    `json:"start,omitempty"`
 }
 
 // ValidDir reports whether dir has the shape DirName produces. Dirs are joined
