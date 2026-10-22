@@ -6,6 +6,8 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"image"
+	"image/png"
 	"io"
 	"io/fs"
 	"mime/multipart"
@@ -19,6 +21,8 @@ import (
 	"sync"
 	"testing"
 	"time"
+
+	"neocities/internal/site"
 )
 
 const testIndex = `[
@@ -72,7 +76,7 @@ func TestPostBlogPrependsFullArchive(t *testing.T) {
 					testEqualJSON(t, index[i+1], oldIndex[i])
 					testEqualJSON(t, archive[i+1], oldArchive[i])
 				}
-				var entry blogEntry
+				var entry site.BlogEntry
 				if err := json.Unmarshal(index[0], &entry); err != nil {
 					t.Fatal(err)
 				}
@@ -241,7 +245,7 @@ func TestPostBlogCommitCheckbox(t *testing.T) {
 			if got := testGit(t, "log", "-1", "--format=%s"); got != "post: blog/008-git-post\n" {
 				t.Errorf("commit subject = %q", got)
 			}
-			paths := "blog/002-newer/index.html\nblog/007-older/index.html\nblog/008-git-post/index.html\nblog/008-git-post/post.json\nblog/all.json\nblog/index.html\nblog/index.json\nfeed.xml\nllms.txt\nsitemap.xml\n"
+			paths := "blog/002-newer/index.html\nblog/007-older/index.html\nblog/008-git-post/index.html\nblog/008-git-post/post.json\nblog/all.json\nblog/index.html\nblog/index.json\nfeed.xml\nllms.txt\nsitemap.xml\nstories.xml\nstories/index.html\n"
 			if got := testGit(t, "diff-tree", "--no-commit-id", "--name-only", "-r", "HEAD"); got != paths {
 				t.Errorf("committed paths = %q, want %q", got, paths)
 			}
@@ -274,6 +278,7 @@ func TestPostBlogPublishWithoutCommit(t *testing.T) {
 			}
 			testWrite(t, "blog/index.json", "[]\n")
 			testWrite(t, "blog/all.json", "[]\n")
+			testPostDirs(t)
 			res := httptest.NewRecorder()
 			postBlog(res, blogRequest(t, map[string]string{"title": "No commit", "body": "body", "push": tc.push}))
 			var reply map[string]string
@@ -287,33 +292,6 @@ func TestPostBlogPublishWithoutCommit(t *testing.T) {
 	}
 }
 
-func TestWriteFileFailurePreservesFiles(t *testing.T) {
-	for _, kind := range []string{"rename", "temporary symlink"} {
-		t.Run(kind, func(t *testing.T) {
-			t.Chdir(t.TempDir())
-			if kind == "rename" {
-				if err := os.Mkdir("data.json", 0o755); err != nil {
-					t.Fatal(err)
-				}
-				testWrite(t, "data.json/keep", "original")
-			} else {
-				testWrite(t, "data.json", "original")
-				testWrite(t, "other.json", "do not truncate")
-				if err := os.Symlink("other.json", "data.json.tmp"); err != nil {
-					t.Fatal(err)
-				}
-			}
-			before := testTree(t, ".")
-			if err := writeFile("data.json", []byte("replacement")); err == nil {
-				t.Fatal("writeFile unexpectedly succeeded")
-			}
-			if after := testTree(t, "."); !reflect.DeepEqual(after, before) {
-				t.Errorf("failed write mutated files: got %v, want %v", after, before)
-			}
-		})
-	}
-}
-
 func TestPostBlogConcurrentRequests(t *testing.T) {
 	t.Chdir(t.TempDir())
 	if err := os.Mkdir("blog", 0o755); err != nil {
@@ -321,7 +299,8 @@ func TestPostBlogConcurrentRequests(t *testing.T) {
 	}
 	testWrite(t, "blog/index.json", "[]\n")
 	testWrite(t, "blog/all.json", "[]\n")
-	guard := posterGuard("example.com", "test-token")
+	testPostDirs(t)
+	guard := site.Guard("example.com", "test-token")
 	handler := guard(postBlog)
 	const count = 12
 	responses := make([]*httptest.ResponseRecorder, count)
@@ -343,7 +322,7 @@ func TestPostBlogConcurrentRequests(t *testing.T) {
 			t.Errorf("concurrent POST /blog: %d %s", res.Code, res.Body.String())
 		}
 	}
-	index := testReadJSON[[]blogEntry](t, "blog/index.json")
+	index := testReadJSON[[]site.BlogEntry](t, "blog/index.json")
 	if len(index) != count {
 		t.Fatalf("index entries = %d, want %d", len(index), count)
 	}
@@ -368,8 +347,13 @@ func TestPostImageMetadata(t *testing.T) {
 			testWrite(t, filepath.Join(section, "index.json"), "[]\n")
 			if section == "blog" {
 				testWrite(t, "blog/all.json", "[]\n")
+				testPostDirs(t)
 			}
-			req := blogRequest(t, map[string]string{"title": "Image post", "caption": "Image post", "body": "image body"}, []byte("P3\n1 1\n255\n255 0 0\n"))
+			var upload bytes.Buffer
+			if err := png.Encode(&upload, image.NewRGBA(image.Rect(0, 0, 1, 1))); err != nil {
+				t.Fatal(err)
+			}
+			req := blogRequest(t, map[string]string{"title": "Image post", "caption": "Image post", "body": "image body"}, upload.Bytes())
 			req.URL.Path = "/" + section
 			res := httptest.NewRecorder()
 			if section == "blog" {
@@ -410,7 +394,7 @@ func TestPosterGuardRejectsUnauthorizedWrites(t *testing.T) {
 	testWrite(t, "blog/index.json", testIndex)
 	testWrite(t, "blog/all.json", testArchive)
 	before := testTree(t, "blog")
-	handler := posterGuard("example.com", "test-token")(postBlog)
+	handler := site.Guard("example.com", "test-token")(postBlog)
 	for _, tc := range []struct{ host, token string }{
 		{"attacker.example", "test-token"},
 		{"example.com", "wrong-token"},
@@ -475,7 +459,7 @@ func TestRepositoryBlogArchive(t *testing.T) {
 
 func testArchiveMatchesPosts(t *testing.T, root string) {
 	t.Helper()
-	index := testReadJSON[[]blogEntry](t, filepath.Join(root, "index.json"))
+	index := testReadJSON[[]site.BlogEntry](t, filepath.Join(root, "index.json"))
 	archive := testReadJSON[[]map[string]json.RawMessage](t, filepath.Join(root, "all.json"))
 	paths, err := filepath.Glob(filepath.Join(root, "*", "post.json"))
 	if err != nil {
@@ -552,7 +536,7 @@ func blogRequest(t *testing.T, fields map[string]string, images ...[]byte) *http
 		}
 	}
 	for _, image := range images {
-		part, err := form.CreateFormFile("image", "upload.ppm")
+		part, err := form.CreateFormFile("image", "upload.png")
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -568,15 +552,19 @@ func blogRequest(t *testing.T, fields map[string]string, images ...[]byte) *http
 	return req
 }
 
-// testPostDirs creates the directories of the posts in testArchive, which a
-// real site always has and the page build writes into.
+// testPostDirs creates the directories of the posts in testArchive and the
+// empty story and memo files, which a real site always has and the page
+// build reads and writes into.
 func testPostDirs(t *testing.T) {
 	t.Helper()
-	for _, dir := range []string{"blog/002-newer", "blog/007-older"} {
+	for _, dir := range []string{"blog/002-newer", "blog/007-older", "stories", "memos"} {
 		if err := os.MkdirAll(dir, 0o755); err != nil {
 			t.Fatal(err)
 		}
 	}
+	testWrite(t, "stories/index.json", "[]\n")
+	testWrite(t, "stories/all.json", "[]\n")
+	testWrite(t, "memos/index.json", "[]\n")
 }
 
 func testWrite(t *testing.T, path, body string) {
@@ -611,5 +599,134 @@ func testEqualJSON(t *testing.T, got, want []byte) {
 	}
 	if !reflect.DeepEqual(values[0], values[1]) {
 		t.Errorf("JSON = %s, want %s", got, want)
+	}
+}
+
+func TestPostMemo_Validation(t *testing.T) {
+	for _, tc := range []struct {
+		name, body string
+		want       int
+	}{
+		{"empty", "", http.StatusBadRequest},
+		{"whitespace", " \r\n\t ", http.StatusBadRequest},
+		{"one", "x", http.StatusOK},
+		{"at limit", strings.Repeat("a", 1000), http.StatusOK},
+		{"at limit multibyte", strings.Repeat("雪", 1000), http.StatusOK},
+		{"at limit after trim", "  " + strings.Repeat("a", 1000) + "\n\n", http.StatusOK},
+		{"over limit", strings.Repeat("a", 1001), http.StatusBadRequest},
+		{"over limit multibyte", strings.Repeat("雪", 1001), http.StatusBadRequest},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Chdir(t.TempDir())
+			if err := os.Mkdir("blog", 0o755); err != nil {
+				t.Fatal(err)
+			}
+			testWrite(t, "blog/index.json", "[]\n")
+			testWrite(t, "blog/all.json", "[]\n")
+			testPostDirs(t)
+			res := httptest.NewRecorder()
+			postMemo(res, blogRequest(t, map[string]string{"body": tc.body}))
+			if res.Code != tc.want {
+				t.Fatalf("POST /memo: %d %s, want %d", res.Code, res.Body.String(), tc.want)
+			}
+			memos := testReadJSON[[]site.Memo](t, "memos/index.json")
+			if tc.want != http.StatusOK {
+				if len(memos) != 0 {
+					t.Errorf("rejected memo was stored: %+v", memos)
+				}
+				return
+			}
+			if len(memos) != 1 || memos[0].Body != strings.TrimSpace(tc.body) {
+				t.Errorf("memos = %+v", memos)
+			}
+		})
+	}
+}
+
+func TestPostMemo_PrependsSanitized(t *testing.T) {
+	t.Chdir(t.TempDir())
+	if err := os.Mkdir("blog", 0o755); err != nil {
+		t.Fatal(err)
+	}
+	testWrite(t, "blog/index.json", "[]\n")
+	testWrite(t, "blog/all.json", "[]\n")
+	testPostDirs(t)
+	testWrite(t, "memos/index.json", `[{"id":4,"date":"2026-01-01T00:00:00Z","body":"older","html":"<p>older</p>\n"}]`)
+	for _, body := range []string{"first\r\nline", "**loud** <script>alert(1)</script><img src=x onerror=alert(2)> [x](https://example.com/)"} {
+		res := httptest.NewRecorder()
+		postMemo(res, blogRequest(t, map[string]string{"body": body}))
+		if res.Code != http.StatusOK {
+			t.Fatalf("POST /memo: %d %s", res.Code, res.Body.String())
+		}
+	}
+	memos := testReadJSON[[]site.Memo](t, "memos/index.json")
+	if len(memos) != 3 || memos[0].ID != 6 || memos[1].ID != 5 || memos[2].ID != 4 {
+		t.Fatalf("memos = %+v", memos)
+	}
+	if memos[1].Body != "first\nline" || memos[1].HTML != "<p>first\nline</p>\n" {
+		t.Errorf("memo 5 = %+v", memos[1])
+	}
+	if html := memos[0].HTML; strings.Contains(html, "script") || strings.Contains(html, "onerror") || strings.Contains(html, "alert") ||
+		!strings.Contains(html, "<strong>loud</strong>") || !strings.Contains(html, `<a href="https://example.com/" rel="noreferrer noopener" target="_blank">x</a>`) {
+		t.Errorf("memo html not sanitized: %q", html)
+	}
+	for _, m := range memos[:2] {
+		if date, err := time.Parse(time.RFC3339, m.Date); err != nil || date.Location() != time.UTC || time.Since(date) > time.Minute {
+			t.Errorf("memo %d date %q: %v", m.ID, m.Date, err)
+		}
+	}
+}
+
+func TestPostMemo_BuildFailureRestoresIndex(t *testing.T) {
+	t.Chdir(t.TempDir())
+	if err := os.Mkdir("blog", 0o755); err != nil {
+		t.Fatal(err)
+	}
+	testWrite(t, "blog/index.json", "[]\n")
+	testWrite(t, "blog/all.json", `[{"id":1,"dir":"../escape","date":"2026-01-01T00:00:00Z"}]`)
+	testPostDirs(t)
+	before := testTree(t, ".")
+	res := httptest.NewRecorder()
+	postMemo(res, blogRequest(t, map[string]string{"body": "lost"}))
+	if res.Code != http.StatusInternalServerError {
+		t.Errorf("POST /memo: %d %s", res.Code, res.Body.String())
+	}
+	if after := testTree(t, "."); !reflect.DeepEqual(after, before) {
+		t.Errorf("failed memo changed files: %v", after)
+	}
+}
+
+func TestPostMemo_Commit(t *testing.T) {
+	if _, err := exec.LookPath("git"); err != nil {
+		t.Skipf("git unavailable: %v", err)
+	}
+	t.Chdir(t.TempDir())
+	testGit(t, "init", "--quiet")
+	for _, identity := range []string{"GIT_AUTHOR_IDENT", "GIT_COMMITTER_IDENT"} {
+		if out, err := exec.CommandContext(t.Context(), "git", "var", identity).CombinedOutput(); err != nil {
+			t.Skipf("inherited git identity unavailable: %v: %s", err, out)
+		}
+	}
+	if err := os.Mkdir("blog", 0o755); err != nil {
+		t.Fatal(err)
+	}
+	testWrite(t, "blog/index.json", "[]\n")
+	testWrite(t, "blog/all.json", "[]\n")
+	testPostDirs(t)
+	if _, err := site.BuildSite(); err != nil {
+		t.Fatal(err)
+	}
+	testGit(t, "add", "--", ".")
+	testGit(t, "commit", "-m", "seed")
+	res := httptest.NewRecorder()
+	postMemo(res, blogRequest(t, map[string]string{"body": "hello", "commit": "on"}))
+	if res.Code != http.StatusOK || !strings.HasSuffix(res.Body.String(), "\"memo: 001 written :: committed\"}\n") {
+		t.Fatalf("POST /memo: %d %s", res.Code, res.Body.String())
+	}
+	if got := testGit(t, "log", "-1", "--format=%s"); got != "memo: 001\n" {
+		t.Errorf("subject = %q", got)
+	}
+	if got := testGit(t, "diff-tree", "--no-commit-id", "--name-only", "-r", "HEAD"); got != "memos/index.json\n" {
+		t.Errorf("committed = %q", got)
 	}
 }

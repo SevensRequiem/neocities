@@ -3,28 +3,32 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{.Post.Title}} :: requiem's weblog</title>
+    <title>{{.Story.Title}} :: requiem's stories</title>
     <meta name="description" content="{{.Description}}" />
     <meta name="author" content="{{.Author}}" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="theme-color" content="#020306" />
     <link rel="canonical" href="{{.URL}}" />
-    <link rel="alternate" type="application/rss+xml" title="::Requiem weblog" href="https://requiem.moe/feed.xml" />
+    <link rel="alternate" type="application/rss+xml" title="::Requiem stories" href="https://requiem.moe/stories.xml" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="::Requiem" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:url" content="{{.URL}}" />
-    <meta property="og:title" content="{{.Post.Title}}" />
+    <meta property="og:title" content="{{.Story.Title}}" />
     <meta property="og:description" content="{{.Description}}" />
     <meta property="og:image" content="{{.Image}}" />
-    <meta property="og:image:alt" content="{{.Post.Title}}" />
-    <meta property="article:published_time" content="{{.Post.Date}}" />
+    <meta property="og:image:alt" content="{{.Story.Title}}" />
+    <meta property="article:published_time" content="{{.Story.Date}}" />
+{{- with .Story.Updated}}
+    <meta property="article:modified_time" content="{{.}}" />
+{{- end}}
     <meta property="article:author" content="{{.Author}}" />
-{{- range .Post.Tags}}
+    <meta property="article:section" content="stories" />
+{{- range .Story.Tags}}
     <meta property="article:tag" content="{{.}}" />
 {{- end}}
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="{{.Post.Title}}" />
+    <meta name="twitter:title" content="{{.Story.Title}}" />
     <meta name="twitter:description" content="{{.Description}}" />
     <meta name="twitter:image" content="{{.Image}}" />
     <script type="application/ld+json">{{.LD}}</script>
@@ -38,28 +42,30 @@
     <div id="vignette"></div>
     <div id="scanlines"></div>
     <div id="static-overlay"></div>
-    <main class="ambient-frame post-page">
+    <main class="ambient-frame post-page story-page">
       <div class="main-col">
         <nav class="tab-bar" aria-label="main navigation">
-          <a class="panel-link" href="../../#entry-{{.Post.ID}}">weblog</a>
-          <a class="panel-link" href="../">archive</a>
+          <a class="panel-link" href="../../">weblog</a>
+          <a class="panel-link" href="../../blog/">archive</a>
+          <a class="panel-link" href="../">stories</a>
           <a class="panel-link" href="../../shrine.html">shrine</a>
         </nav>
-        <article class="entry-card post-card">
+        <article class="entry-card post-card story-card">
           <header class="entry-head">
-            <span class="panel-title">::ENTRY.{{printf "%03d" .Post.ID}}</span>
-            <time class="entry-tag" datetime="{{.Post.Date}}">{{.Stamp}}</time>
+            <span class="panel-title">::STORY.{{printf "%03d" .Story.ID}}</span>
+            <time class="entry-tag" datetime="{{.Story.Date}}">{{.Stamp}}</time>
           </header>
-{{- with .Post.Image}}
-          <div class="mosaic-frame post-frame"><img class="mosaic-img" src="{{.}}" alt="{{$.Post.Title}}" /></div>
+{{- with .Story.Image}}
+          <div class="mosaic-frame post-frame"><img class="mosaic-img" src="{{.}}" alt="{{$.Story.Title}}" /></div>
 {{- end}}
           <div class="post-heading">
-            <h1 class="post-title">{{.Post.Title}}</h1>
+            <h1 class="post-title">{{.Story.Title}}</h1>
+            <span class="entry-tag story-meta">{{.Words}} words :: {{.Minutes}} min read{{with .Updated}} :: updated {{.}}{{end}}</span>
 {{- with .Tags}}
             <span class="entry-tag post-tags">{{.}}</span>
 {{- end}}
           </div>
-          <div class="post-body">{{.Body}}</div>
+          <div class="post-body story-body">{{.Body}}</div>
           <footer class="post-foot">
 {{- with .Newer}}
             <a class="panel-link pager-prev" href="../{{.Dir}}/" rel="prev">newer :: {{.Title}}</a>

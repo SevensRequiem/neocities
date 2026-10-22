@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="poster-token" content="{{.Token}}" />
+    <title>writer</title>
+    <link rel="stylesheet" href="/ui.css" />
+  </head>
+  <body>
+    <header class="top-bar">
+      <h1 class="app-title">::WRITER</h1>
+      <label class="field-check"><input type="checkbox" id="git-commit" />git commit</label>
+      <label class="field-check"><input type="checkbox" id="git-push" />git push</label>
+      <a class="tab-btn" href="/site/stories/" target="_blank" rel="noopener noreferrer">view stories</a>
+      <a class="tab-btn" href="/site/" target="_blank" rel="noopener noreferrer">view site</a>
+    </header>
+
+    <div class="layout">
+      <aside class="library" aria-label="library">
+        <button class="submit-btn" type="button" id="new-draft">+ new draft</button>
+        <h2 class="panel-title">::DRAFTS</h2>
+        <ul class="shelf" id="draft-list"></ul>
+        <h2 class="panel-title">::PUBLISHED</h2>
+        <ul class="shelf" id="published-list"></ul>
+      </aside>
+
+      <p class="empty-desk" id="empty-desk">pick a draft or start a new one.</p>
+
+      <main class="desk" id="desk" hidden>
+        <section class="editor" aria-label="editor">
+          <input class="title-input" id="f-title" placeholder="untitled" aria-label="title" autocomplete="off" />
+          <details class="meta-fields">
+            <summary class="field-label">tags, summary, author, cover</summary>
+            <label class="field-label">tags, comma separated<input class="field-input" id="f-tags" autocomplete="off" /></label>
+            <label class="field-label">summary<textarea class="field-input field-summary" id="f-summary"></textarea></label>
+            <label class="field-label">author<input class="field-input" id="f-author" autocomplete="off" /></label>
+            <div class="field-label">
+              cover, converted to webp
+              <div class="tag-row">
+                <input class="field-input cover-file" type="file" id="f-cover" accept=".png,.jpg,.jpeg,.gif,.webp,.avif,.heic,.bmp,.tif,.tiff" aria-label="cover image" />
+                <button class="tag-chip" type="button" id="cover-remove" hidden>remove cover</button>
+              </div>
+            </div>
+          </details>
+          <textarea class="body-input" id="f-body" aria-label="story, markdown" placeholder="write. a line with --- is a scene break." spellcheck="true"></textarea>
+        </section>
+
+        <section class="preview" aria-label="preview">
+          <h2 class="panel-title" id="pv-head">::STORY.NEW</h2>
+          <h3 class="preview-title" id="pv-title"></h3>
+          <p class="preview-meta" id="pv-meta"></p>
+          <img class="preview-img" id="pv-cover" alt="" hidden />
+          <div class="preview-body" id="pv-body"></div>
+        </section>
+      </main>
+    </div>
+
+    <footer class="status-bar" id="status-bar" hidden>
+      <span class="count" id="word-count">0 words :: 1 min read</span>
+      <span class="save-state" id="save-state" role="status"></span>
+      <span class="conflict" id="conflict" hidden>
+        <button class="tag-chip" type="button" id="conflict-reload">reload saved copy</button>
+        <button class="tag-chip" type="button" id="conflict-keep">keep mine</button>
+      </span>
+      <span class="actions">
+        <button class="tag-chip" type="button" id="delete-draft">delete</button>
+        <button class="submit-btn" type="button" id="publish">publish</button>
+      </span>
+    </footer>
+
+    <p class="status-line" id="status-line" role="status"></p>
+
+    <script src="/assets/js/marked.min.js"></script>
+    <script src="/assets/js/purify.min.js"></script>
+    <script src="/ui.js"></script>
+  </body>
+</html>

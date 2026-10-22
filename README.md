@@ -2,9 +2,37 @@ my live neocities page & posting automation
 
 ## posting
 
-`go run ./poster` opens a local form for weblog posts and gallery frames. It writes `post.json`, updates the indexes, converts images to webp (`magick` on PATH) and rebuilds the static blog pages, `sitemap.xml`, `feed.xml` (newest 20) and `llms.txt`. `go run ./poster -build` rebuilds without posting; run it after hand-editing a `post.json` or the poster templates.
+`go run ./poster` opens a local form for weblog posts, gallery frames and memos. It writes `post.json`, updates the indexes, converts images to webp (`magick` on PATH) and rebuilds the static blog and story pages, `blog/index.html`, `stories/index.html`, `sitemap.xml`, `feed.xml` (weblog posts and stories, newest 20), `stories.xml` (every story) and `llms.txt`. `go run ./poster -build` rebuilds without posting; run it after hand-editing a `post.json`, `stories/all.json`, `memos/index.json` or the templates in `internal/site/`.
 
-`index.html` on `file://` shows "signal lost" (fetch is blocked); use the poster's `view site` link. Tick `git commit` / `git push` in the form; pushing `main` deploys everything except `poster/`, `cf-worker/` and `webring/`.
+Memos are short asides (1-1000 characters of markdown) kept newest first in `memos/index.json`; the homepage places each one between the weblog posts around its timestamp. The build fills each memo's `html` from its `body`, so edit `body` and rebuild. That `html` is the same goldmark + bluemonday output the weblog pages carry, which is why `site.js` inserts it with `innerHTML`; nothing else on the homepage does. A memo sits directly before the first post older than it, so it never moves a post to another page: newer than every post puts it on top of page 1, older than every post puts it at the end of the last page. `#memo-N` opens the page holding memo N and scrolls to it; `#stories` opens the stories tab.
+
+Post a memo from the poster's `memo` tab: body, live preview, commit/push checkboxes. It commits as `memo: NNN`.
+
+`index.html` on `file://` shows "signal lost" (fetch is blocked); use the poster's `view site` link. Tick `git commit` / `git push` in the form; pushing `main` deploys everything except `poster/`, `internal/`, `writer/`, `cf-worker/` and `webring/`.
+
+The deploy workflow uploads `index.html`, `shrine.html`, `robots.txt`, `sitemap.xml`, `feed.xml`, `llms.txt`, `stories.xml` and `assets/`, `blog/`, `gallery/`, `stories/`, `memos/`, and prunes remote files only inside those five directories.
+
+`internal/site` holds what both binaries share: the build and its templates, atomic json writes, image conversion, the git commit/push step and the loopback guard.
+
+## stories
+
+`go run ./writer` opens a local app for short fiction, with the poster's security model: it listens on `127.0.0.1` with a per-run token, and every write checks the token and the `Host` header. The sidebar lists drafts (title, last save, word count, `edits ::STORY.NNN` when it's editing a published story) and published stories from `stories/index.json`. The editor has title, tags, summary, author, a cover image, a markdown body and a live preview with word count and read time (words / 230, at least 1 min).
+
+Drafts live in `writer/drafts/<id>.json` (plus `<id>.webp` for a cover). That directory is gitignored because the repo is public: an unpublished story never gets committed. Draft ids are 16 hex chars and every route checks them before touching disk.
+
+Autosave fires 1 s after the last keystroke, every 30 s while there are unsaved changes, and when the tab is hidden or closed (keepalive fetch). The status bar shows `saved HH:MM:SS`, `saving...`, `unsaved changes` or the error. Each save carries the draft's rev; a stale rev (the same draft open in two tabs) gets a 409, autosave pauses and you pick `reload saved copy` or `keep mine`.
+
+| action | does |
+|---|---|
+| publish | needs title and body. A new story gets the next id, `stories/NNN-slug/`, a date and its `post.json` (+ `image.webp`); the draft is deleted. Commits as `story: stories/<dir>` |
+| publish update | a draft opened from a published story keeps its id, dir and date, sets `updated` and replaces the cover or drops it |
+| edit | on a published story: reopens the draft already linked to it, or copies `post.json` and the cover into a new one |
+| unpublish | moves the story back into a draft, removes its dir and index entries, rebuilds. Second click to confirm |
+| delete | removes a draft and its cover. Second click to confirm |
+
+A failed publish restores `stories/index.json`, `stories/all.json` and the story dir. Scene breaks are markdown `---`, rendered as `◈ ◈ ◈`.
+
+The build turns `stories/all.json` into `stories/<dir>/index.html` (reading layout, newer/older links, `ShortStory` JSON-LD), the list at `stories/index.html`, `stories.xml` (every story, full text) and `/stories/` entries in `sitemap.xml` and `llms.txt`. `feed.xml` mixes weblog posts and stories by date, newest 20, story items tagged `story`. The homepage `stories` tab reads `stories/index.json`.
 
 ## old assets
 

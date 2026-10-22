@@ -3,16 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>weblog archive :: requiem's weblog</title>
-    <meta name="description" content="Every entry in requiem's weblog: self-taught development, side projects, mental health and healing." />
+    <title>stories :: requiem's stories</title>
+    <meta name="description" content="Every short story requiem has published." />
     <meta name="author" content="requiem" />
     <meta name="theme-color" content="#020306" />
-    <link rel="canonical" href="https://requiem.moe/blog/" />
-    <link rel="alternate" type="application/rss+xml" title="::Requiem weblog" href="https://requiem.moe/feed.xml" />
+    <link rel="canonical" href="https://requiem.moe/stories/" />
+    <link rel="alternate" type="application/rss+xml" title="::Requiem stories" href="https://requiem.moe/stories.xml" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="::Requiem" />
-    <meta property="og:url" content="https://requiem.moe/blog/" />
-    <meta property="og:title" content="weblog archive :: ::Requiem" />
+    <meta property="og:url" content="https://requiem.moe/stories/" />
+    <meta property="og:title" content="stories :: ::Requiem" />
     <meta property="og:image" content="https://requiem.moe/assets/og.jpg" />
     <link rel="preload" href="../assets/fonts/DepartureMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="../assets/css/effects.css" />
@@ -24,22 +24,22 @@
     <div id="vignette"></div>
     <div id="scanlines"></div>
     <div id="static-overlay"></div>
-    <main class="ambient-frame post-page">
+    <main class="ambient-frame post-page story-page">
       <div class="main-col">
         <nav class="tab-bar" aria-label="main navigation">
           <a class="panel-link" href="../">weblog</a>
+          <a class="panel-link" href="../blog/">archive</a>
           <a class="panel-link" href="../shrine.html">shrine</a>
         </nav>
-        <article class="entry-card post-card">
+        <article class="entry-card post-card story-card">
           <header class="entry-head">
-            <h1 class="panel-title">::ARCHIVE</h1>
-            <span class="entry-tag">{{len .}} entries</span>
+            <h1 class="panel-title">::STORIES</h1>
+            <span class="entry-tag">0 stories</span>
           </header>
-          <ol class="archive-list">
-{{- range .}}
-            <li><time class="entry-tag" datetime="{{.Date}}">{{.Stamp}}</time><a class="panel-link" href="./{{.Dir}}/">{{.Title}}</a></li>
-{{- end}}
-          </ol>
+          <p class="story-summary">no stories yet.</p>
+          <footer class="post-foot">
+            <a class="panel-link" href="../stories.xml">rss :: stories.xml</a>
+          </footer>
         </article>
       </div>
     </main>

@@ -41,6 +41,7 @@
   var PAGE_SIZE = 2;
   var weblog = document.getElementById('panel-weblog');
   var posts = [];
+  var memos = [];
   var page = 1;
 
   function el(tag, className, text) {
@@ -94,14 +95,33 @@
     return card;
   }
 
+  function memoStrips(slot) {
+    return memos.filter(function (memo) {
+      return memo.slot === slot;
+    }).map(function (memo) {
+      var strip = el('aside', 'memo-strip');
+      strip.id = 'memo-' + memo.id;
+      var head = el('a', 'memo-head', '◈ MEMO.' + String(memo.id).padStart(3, '0') + ' :: ' + memo.date.slice(0, 16).replace(/-/g, '.').replace('T', ' '));
+      head.href = '#memo-' + memo.id;
+      var body = el('div', 'memo-body');
+      body.innerHTML = memo.html;
+      strip.append(head, body);
+      return strip;
+    });
+  }
+
   function showPage(n) {
     var pages = Math.ceil(posts.length / PAGE_SIZE);
     page = Math.min(Math.max(n, 1), pages);
-    var cards = posts.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE).map(function (post) {
+    var first = (page - 1) * PAGE_SIZE;
+    var cards = [];
+    posts.slice(first, page * PAGE_SIZE).forEach(function (post, i) {
       var card = postCard(post, post === posts[0]);
       card.append(el('p', 'entry-para', post.excerpt), postFoot('read more', './blog/' + post.dir + '/'));
-      return card;
+      cards.push.apply(cards, memoStrips(first + i));
+      cards.push(card);
     });
+    if (page === pages) cards.push.apply(cards, memoStrips(posts.length));
     var pager = el('nav', 'pager');
     pager.setAttribute('aria-label', 'weblog pages');
     var prev = el(page > 1 ? 'a' : 'span', 'panel-link pager-prev', 'newer');
@@ -130,30 +150,101 @@
     var tools = el('div', 'weblog-tools');
     tools.append(pager, feeds);
     weblog.replaceChildren.apply(weblog, [tools].concat(cards));
-    selectTab(document.getElementById('tab-weblog'));
   }
 
   function route(e) {
-    var m = location.hash.match(/^#(post|page|entry)-(\d+)$/);
-    var idx = m && m[1] !== 'page' ? posts.findIndex(function (p) {
+    var stories = location.hash === '#stories';
+    if (stories) selectTab(document.getElementById('tab-stories'));
+    if (!posts.length) return;
+    var m = location.hash.match(/^#(post|page|entry|memo)-(\d+)$/);
+    var list = m && m[1] === 'memo' ? memos : posts;
+    var idx = m && m[1] !== 'page' ? list.findIndex(function (p) {
       return p.id === Number(m[2]);
     }) : -1;
     if (m && m[1] === 'post' && idx >= 0) return location.replace('./blog/' + posts[idx].dir + '/');
-    var page = m && m[1] === 'page' ? Number(m[2]) : idx >= 0 ? Math.floor(idx / PAGE_SIZE) + 1 : 1;
-    if (m && m[1] === 'entry') history.replaceState(null, '', '#page-' + page);
-    showPage(page);
+    var slot = list === memos && idx >= 0 ? Math.min(memos[idx].slot, posts.length - 1) : idx;
+    var target = stories ? page : m && m[1] === 'page' ? Number(m[2]) : slot >= 0 ? Math.floor(slot / PAGE_SIZE) + 1 : 1;
+    if (m && m[1] === 'entry') history.replaceState(null, '', '#page-' + target);
+    showPage(target);
+    if (stories) return;
+    selectTab(document.getElementById('tab-weblog'));
+    if (list === memos && idx >= 0) return document.getElementById('memo-' + memos[idx].id).scrollIntoView();
     if (e) document.querySelector('.tab-bar').scrollIntoView();
   }
 
-  fetch('./blog/index.json')
-    .then(json)
-    .then(function (index) {
-      posts = index;
+  if (location.hash === '#stories') route();
+  addEventListener('hashchange', route);
+
+  Promise.all([
+    fetch('./blog/index.json').then(json),
+    fetch('./memos/index.json').then(json).catch(function () {
+      return [];
+    }),
+  ])
+    .then(function (data) {
+      posts = data[0];
+      memos = data[1].map(function (memo) {
+        var at = Date.parse(memo.date);
+        var slot = posts.findIndex(function (post) {
+          return Date.parse(post.date) < at;
+        });
+        memo.slot = slot < 0 ? posts.length : slot;
+        return memo;
+      });
       route();
-      addEventListener('hashchange', route);
     })
     .catch(function () {
       weblog.replaceChildren(notice('signal lost: could not load ./blog/index.json'));
+    });
+
+  var storiesPanel = document.getElementById('panel-stories');
+  fetch('./stories/index.json')
+    .then(json)
+    .then(function (index) {
+      var cards = index.map(function (story) {
+        var card = el('article', 'entry-card post-card story-card');
+        var head = el('header', 'entry-head');
+        head.append(
+          el('h2', 'panel-title', '::STORY.' + String(story.id).padStart(3, '0')),
+          el('span', 'entry-tag', story.date.slice(0, 10).replace(/-/g, '.'))
+        );
+        card.append(head);
+        if (story.image) {
+          var frame = el('div', 'mosaic-frame post-frame');
+          var img = el('img', 'mosaic-img');
+          img.src = './stories/' + story.dir + '/' + story.image;
+          img.alt = story.title;
+          img.loading = 'lazy';
+          frame.append(img);
+          card.append(frame);
+        }
+        var heading = el('div', 'post-heading');
+        heading.append(
+          el('h3', 'post-title', story.title),
+          el('span', 'entry-tag story-meta', story.words + (story.words === 1 ? ' word' : ' words') + ' :: ' + Math.max(1, Math.floor(story.words / 230)) + ' min read')
+        );
+        if (story.tags.length) {
+          heading.append(el('span', 'entry-tag post-tags', story.tags.map(function (tag) {
+            return '#' + tag.toLowerCase().replace(/\s+/g, '-');
+          }).join(' ')));
+        }
+        card.append(heading);
+        if (story.summary) card.append(el('p', 'entry-para', story.summary));
+        card.append(postFoot('read', './stories/' + story.dir + '/'));
+        return card;
+      });
+      var tools = el('div', 'weblog-tools');
+      var indexLink = el('a', 'panel-link', 'story index');
+      indexLink.href = './stories/';
+      var rssLink = el('a', 'blog-export blog-export-rss', 'rss');
+      rssLink.href = './stories.xml';
+      var feeds = el('div', 'weblog-feeds');
+      feeds.append(rssLink);
+      tools.append(indexLink, feeds);
+      storiesPanel.replaceChildren.apply(storiesPanel, [tools].concat(cards.length ? cards : [notice('no stories yet. the first one is still being written.')]));
+    })
+    .catch(function () {
+      storiesPanel.replaceChildren(notice('signal lost: could not load ./stories/index.json'));
     });
 
   var repoList = document.getElementById('repo-list');

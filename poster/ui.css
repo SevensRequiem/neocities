@@ -144,6 +144,11 @@ body {
   resize: vertical;
 }
 
+.field-memo {
+  min-height: 160px;
+  resize: vertical;
+}
+
 .panel-title {
   margin: 0;
   font-size: 12px;

@@ -1,8 +1,10 @@
 # ::Requiem
 
-> requiem's corner of cyberspace: a weblog on self-taught development, side projects, mental health and healing, plus a photo gallery.
+> requiem's corner of cyberspace: a weblog on self-taught development, side projects, mental health and healing, short fiction, plus a photo gallery.
 
 Every weblog entry is a static page under https://requiem.moe/blog/. The full archive with markdown bodies is https://requiem.moe/blog/all.json and the RSS feed is https://requiem.moe/feed.xml.
+
+Every story is a static page under https://requiem.moe/stories/. The full archive with markdown bodies is https://requiem.moe/stories/all.json and the stories feed is https://requiem.moe/stories.xml.
 
 ## Posts
 

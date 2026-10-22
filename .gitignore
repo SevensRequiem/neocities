@@ -11,6 +11,11 @@
 !/README.md
 !/blog/
 !/gallery/
+!/stories/
+!/memos/
+!/stories.xml
+!/internal/
+!/writer/
 !/.github/
 !/poster/
 !/go.mod
@@ -21,4 +26,5 @@
 /cf-worker/.wrangler/
 /cf-worker/.dev.vars
 /poster/.env
+/writer/drafts/
 /cf-worker/.claude/

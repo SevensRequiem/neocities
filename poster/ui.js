@@ -1,7 +1,8 @@
 (function () {
   var token = document.querySelector('meta[name="poster-token"]').content;
-  var forms = [document.getElementById('form-blog'), document.getElementById('form-gallery')];
-  var tabs = [document.getElementById('tab-blog'), document.getElementById('tab-gallery')];
+  var forms = [document.getElementById('form-blog'), document.getElementById('form-gallery'), document.getElementById('form-memo')];
+  var tabs = [document.getElementById('tab-blog'), document.getElementById('tab-gallery'), document.getElementById('tab-memo')];
+  var memoCount = document.getElementById('memo-count');
   var previewImg = document.getElementById('preview-img');
   var previewBody = document.getElementById('preview-body');
   var statusLine = document.getElementById('status-line');
@@ -17,7 +18,7 @@
     return chip;
   }
 
-  forms.forEach(function (form) {
+  forms.slice(0, 2).forEach(function (form) {
     var picked = [];
     var fresh = form.querySelector('.tag-new');
 
@@ -69,10 +70,13 @@
 
 
   function renderPreview() {
-    var form = forms[0].hidden ? forms[1] : forms[0];
+    var form = forms.filter(function (f) {
+      return !f.hidden;
+    })[0];
     var text = form.elements.body ? form.elements.body.value : form.elements.caption.value;
     previewBody.innerHTML = DOMPurify.sanitize(marked.parse(text));
-    var file = form.elements.image.files[0];
+    memoCount.textContent = forms[2].elements.body.value.length + ' / 1000';
+    var file = form.elements.image && form.elements.image.files[0];
     URL.revokeObjectURL(previewImg.src);
     previewImg.hidden = !file;
     if (file) previewImg.src = URL.createObjectURL(file);

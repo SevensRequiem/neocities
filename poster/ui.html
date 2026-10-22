@@ -12,6 +12,7 @@
     <div class="tab-bar" role="tablist" aria-label="post type">
       <button class="tab-btn" type="button" role="tab" id="tab-blog" aria-controls="form-blog" aria-selected="true">weblog</button>
       <button class="tab-btn" type="button" role="tab" id="tab-gallery" aria-controls="form-gallery" aria-selected="false">gallery</button>
+      <button class="tab-btn" type="button" role="tab" id="tab-memo" aria-controls="form-memo" aria-selected="false">memo</button>
       <button class="tab-btn" type="button" role="tab" id="tab-qa" aria-controls="qa-inbox" aria-selected="false">q&amp;a</button>
       <a class="tab-btn" href="/site/" target="_blank" rel="noopener noreferrer">view site</a>
     </div>
@@ -53,6 +54,16 @@
           <input type="hidden" name="tags" />
         </div>
         <label class="field-label">image, converted to webp<input class="field-input" type="file" name="image" accept=".png,.jpg,.jpeg,.gif,.webp,.avif,.heic,.bmp,.tif,.tiff" required /></label>
+        <div class="tag-row">
+          <label class="field-check"><input type="checkbox" name="commit" />git commit</label>
+          <label class="field-check"><input type="checkbox" name="push" />git push</label>
+        </div>
+        <button class="submit-btn">post</button>
+      </form>
+
+      <form class="post-form" id="form-memo" action="/memo" hidden>
+        <label class="field-label">memo, markdown, up to 1000 characters<textarea class="field-input field-memo" name="body" maxlength="1000" required></textarea></label>
+        <span class="field-label" id="memo-count">0 / 1000</span>
         <div class="tag-row">
           <label class="field-check"><input type="checkbox" name="commit" />git commit</label>
           <label class="field-check"><input type="checkbox" name="push" />git push</label>
