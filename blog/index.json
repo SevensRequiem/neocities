@@ -1,5 +1,18 @@
 [
   {
+    "id": 111,
+    "dir": "111-i-m-a-problem-to-many",
+    "title": "i'm a problem; to many!",
+    "date": "2026-10-23T10:43:43Z",
+    "tags": [
+      "Mental Health",
+      "Update",
+      "Trauma"
+    ],
+    "excerpt": "apparently expressing that being around someone who drinks alcohol, puts me on edge, makes me a bad person. it's a weird dynamic. I'll express it out of a need for my own healing, and my mother will turn it around to be...",
+    "image": "image.webp"
+  },
+  {
     "id": 110,
     "dir": "110-southern-decay",
     "title": "Southern Decay",
