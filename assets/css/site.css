@@ -61,7 +61,6 @@
   --accent-pink: #ff9dc8;
 
   --brand-discord: #8c9eff;
-  --brand-patreon: #ff8a70;
 
   --z-shell: 2;
   --z-subtitle: 50;
@@ -841,25 +840,6 @@ button.panel-link {
   filter: drop-shadow(0 0 6px color-mix(in srgb, var(--uplink) 70%, transparent));
 }
 
-.uplink-support {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 6px;
-}
-
-.uplink-support .uplink {
-  grid-template-columns: 24px minmax(0, 1fr);
-  gap: 6px;
-  min-width: 0;
-  min-height: 50px;
-  padding: 8px 6px;
-}
-
-.uplink-support img {
-  width: 24px;
-  height: 24px;
-}
-
 .uplink-text {
   display: flex;
   flex-direction: column;
@@ -924,15 +904,8 @@ button.panel-link {
   animation: uplink-pulse 1.8s ease-in-out infinite;
 }
 
-.uplink-patreon {
-  --uplink: var(--brand-patreon);
-  background:
-    repeating-linear-gradient(-45deg, rgba(255, 138, 112, 0.1) 0 4px, transparent 4px 8px),
-    linear-gradient(90deg, rgba(255, 110, 84, 0.3) 0%, rgba(40, 12, 16, 0.7) 75%);
-}
-
-.uplink-paypal {
-  --uplink: var(--lcd-cyan);
+.uplink-kofi {
+  --uplink: var(--lcd-rose);
 }
 
 @keyframes uplink-sheen {
