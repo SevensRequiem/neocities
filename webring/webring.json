@@ -1,3 +1,17 @@
 [
-  { "url": "https://xaturing.net/", "banner": "https://xaturing.net/assets/banner.svg" }
+  { "url": "https://xaturing.net/", "banner": "https://xaturing.net/assets/banner.svg" },
+  { "url": "https://%E7%8C%AB.%E7%A7%BB%E5%8A%A8", "banner": "cat.gif" },
+  { "url": "https://forum.agoraroad.com/index.php", "banner": "agoraroad.gif" },
+  { "url": "https://3to.moe", "banner": "3to.gif" },
+  { "url": "https://galladite.net/~galladite/", "banner": "galladite.gif" },
+  { "url": "https://heimdall.pm", "banner": "heimdall.gif" },
+  { "url": "https://korosama.neocities.org", "banner": "korosama.gif" },
+  { "url": "https://newdigitalera.neocities.org", "banner": "newdigitalera.png" },
+  { "url": "https://ophanim.neocities.org", "banner": "ophanim.gif" },
+  { "url": "https://yukinu.com", "banner": "yukinu.gif" },
+  { "url": "https://twitter.com/sketchygfx__", "banner": "sketch.png" },
+  { "url": "https://foreverliketh.is/", "banner": "foreverliketh.is.gif" },
+  { "url": "https://crystal.tilde.institute/", "banner": "crystal-tilde.gif" },
+  { "url": "https://articexploit.xyz/", "banner": "the_arcade.gif" },
+  { "url": "https://grafo.zone/", "banner": "grafo.gif" }
 ]
