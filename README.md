@@ -12,7 +12,7 @@ Post a memo from the poster's `memo` tab: body, live preview, commit/push checkb
 
 `index.html` on `file://` shows "signal lost" (fetch is blocked); use the poster's `view site` link. Tick `git commit` / `git push` in the form; pushing `main` deploys everything except `poster/`, `internal/`, `writer/`, `cf-worker/` and `webring/`.
 
-The deploy workflow uploads `index.html`, `shrine.html`, `robots.txt`, `sitemap.xml`, `feed.xml`, `llms.txt`, `stories.xml` and `assets/`, `blog/`, `gallery/`, `stories/`, `memos/`, and prunes remote files only inside those five directories.
+The deploy workflow uploads `index.html`, `shrine.html`, `robots.txt`, `sitemap.xml`, `feed.xml`, `llms.txt`, `stories.xml` and `assets/`, `blog/`, `gallery/`, `stories/`, `memos/`, `themes/`, and prunes remote files only inside those six directories.
 
 `internal/site` holds what both binaries share: the build and its templates, atomic json writes, image conversion, the git commit/push step and the loopback guard.
 
@@ -35,6 +35,12 @@ Autosave fires 1 s after the last keystroke, every 30 s while there are unsaved 
 A failed publish restores `stories/index.json`, `stories/all.json` and the story dir. Scene breaks are markdown `---`, rendered as `◈ ◈ ◈`.
 
 The build turns `stories/all.json` into `stories/<dir>/index.html` (reading layout, newer/older links, `ShortStory` JSON-LD), the list at `stories/index.html`, `stories.xml` (every story, full text) and `/stories/` entries in `sitemap.xml` and `llms.txt`. `feed.xml` mixes weblog posts and stories by date, newest 20, story items tagged `story`. The homepage `stories` tab reads `stories/index.json`.
+
+## themes
+
+`themes/<name>/` holds alternate front ends that read the same data as the homepage (`blog/index.json`, `blog/all.json`, `memos/index.json`, `gallery/index.json`, `stories/*.json`, the webring from GitHub) through `../../`, so they need no build step.
+
+`themes/aether/` draws the whole site in WebGL: a fragment shader renders the sky, utility poles and wires with signal pulses, the UI is rasterized into a texture, and a post pass adds blur behind panels, barrel warp, chromatic fringe, scanlines and grain. Hash routes (`#/weblog`, `#/memos`, `#/post/122`, `#/story/3`, `#/frame/7`) keep the back button working. Keys: `1`-`7` sections, `j`/`k` or arrows scroll, space pages, esc goes back. The background drops to a lower resolution after two 2 s windows under 40 fps. Without WebGL it shows a link to the plain site.
 
 ## old assets
 
