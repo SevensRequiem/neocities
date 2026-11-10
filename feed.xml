@@ -7,6 +7,15 @@
     <description>requiem&#39;s weblog on self-taught development, side projects, mental health and healing.</description>
     <language>en</language>
     <item>
+      <title>Southern Klan</title>
+      <link>https://requiem.moe/blog/123-southern-klan/</link>
+      <guid>https://requiem.moe/blog/123-southern-klan/</guid>
+      <pubDate>Tue, 10 Nov 2026 07:45:08 +0000</pubDate>
+      <dc:creator>requiem</dc:creator>
+      <description>Another southern hatred post. Not traditional hatred, but a longing for comfort and belonging and dignity. You can&#39;t fucking think 0.000000000001mm off from the default thinking here without being emotionally punished...</description>
+      <content:encoded>&lt;p&gt;Another southern hatred post. Not traditional hatred, but a longing for comfort and belonging and dignity. You can&amp;#39;t fucking think 0.000000000001mm off from the default thinking here without being emotionally punished and ostracized.&lt;/p&gt;&#xA;&lt;p&gt;And it&amp;#39;s all from fear of extended &amp;#34;family&amp;#34; and experience. Meaning a lot of my past is projecting through this post, I think. I was sorta forced to get baptized as if I didn&amp;#39;t believe in Source already (Not that I regret baptism, I view it differently than christians, a spiritual purification not le saving). Being 143iq in this place is causing me so much suffering, I need to get ooooout. I can&amp;#39;t even be pagan without getting looked at weird. Fuck offfff&lt;/p&gt;&#xA;&lt;p&gt;Jk sorta, I&amp;#39;m creating scenarios in my head over scary family members who&amp;#39;ve indirectly threatened me in the past for being different and it&amp;#39;s causing me a lot of stress right now bc my mind wont shut up about it, henceeeee why I gotta vent about it here. I do want to gtfo of here asap (Please donate to my Save Requiem Fund!)&lt;/p&gt;&#xA;</content:encoded>
+    </item>
+    <item>
       <title>Dear Palantir &amp; Defense Contractors</title>
       <link>https://requiem.moe/blog/122-dear-palantir-defense-contractors/</link>
       <guid>https://requiem.moe/blog/122-dear-palantir-defense-contractors/</guid>
@@ -217,18 +226,6 @@
       <category>Trauma</category>
       <description>Thoughts about some grand post, grand musings, about familial pain come to mind, but it&#39;s not enough. Not for the pain sake, but I&#39;ve started to feed/transform pain into creativity. In these moments (like now), I feel...</description>
       <content:encoded>&lt;p&gt;Thoughts about some grand post, grand musings, about familial pain come to mind, but it&amp;#39;s not enough. Not for the pain sake, but I&amp;#39;ve started to feed/transform pain into creativity. In these moments (like now), I feel warm and euphoric from my pain because I&amp;#39;m channeling it to be more hyperphantasia. Probably not the healthiest aspect, but it is comfortable.&lt;/p&gt;&#xA;&lt;p&gt;On things not said about my family; I never really had one. Not for the lack of wanting one or lack of trying, it&amp;#39;s just no one&amp;#39;s been there for me. It&amp;#39;s always just been how I&amp;#39;m a burden, inconvenience, or mentally ill (showing signs of ptsd) on both sides of my family ever since I was 6! Twenty years of ostrasization without an exit... I like to think that helped form my spirituality and the &amp;#34;lighter&amp;#34; side of my world view over the years which is still growing. Maybe it&amp;#39;s just a lust for life disguised as light. Haha!&lt;/p&gt;&#xA;&lt;p&gt;I don&amp;#39;t blame anyone or anything anymore unless it&amp;#39;s from my childhood. I&amp;#39;ve become too understanding of humans. Yea, I like to put myself outside of being human because I act differently &amp;amp; have always been treated as if I wasn&amp;#39;t one!&lt;/p&gt;&#xA;</content:encoded>
-    </item>
-    <item>
-      <title>Basement AI Researcher</title>
-      <link>https://requiem.moe/blog/103-basement-ai-researcher/</link>
-      <guid>https://requiem.moe/blog/103-basement-ai-researcher/</guid>
-      <pubDate>Wed, 14 Oct 2026 05:44:54 +0000</pubDate>
-      <dc:creator>requiem</dc:creator>
-      <category>Tech</category>
-      <category>Update</category>
-      <category>AI</category>
-      <description>Waow, a post that isn&#39;t pure trauma and mental health!?!?! Wtf happened to requiem! I&#39;ve been researching AI in-between projects, using AI. I think I form a sort of neural symbiotic relationship with AI due to my...</description>
-      <content:encoded>&lt;p&gt;Waow, a post that isn&amp;#39;t pure trauma and mental health!?!?! Wtf happened to requiem!&lt;/p&gt;&#xA;&lt;p&gt;I&amp;#39;ve been researching AI in-between projects, using AI. I think I form a sort of neural symbiotic relationship with AI due to my BPD/PTSD prediction; It causes me to create chains of thought in an AI by simple prompts, unconsciously, as also a lazy attempt for efficiency. Who wants to write a 5000 line prompt? I&amp;#39;ve noticed this also increases the more I understand AI / ML / CS, so maybe I&amp;#39;m actually going to be a wizard in my future!&lt;/p&gt;&#xA;&lt;p&gt;My current project &amp;#34;Xa&amp;#34; in honor of XaTuring, has led me to some interesting foundational theories on how a living AI should be Architected. I&amp;#39;m looking into how to hash and store every neural network tick, so any future instance of this NN can compute the hash to get its memory. Around 8 to 9 gb / day of disk writes in testing without compression. I dub it Neural Network Time of Compute or NNTC for short. I&amp;#39;ll probably post an example of it on github under something like &amp;#34;Identify historical execution boundaries and reconstruct their complete declared state&amp;#34;. The hash will store the exact state of a neural net at a current tick at a specific unix timestamp down to exact sensory inputs. I believe this will be needed in an Alive system!&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;One 32-byte hash per entry adds 276 MB/day.&lt;/li&gt;&#xA;&lt;li&gt;A 1 KiB event per entry adds 8.85 GB/day.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;I barely know anything on ML or Neural Networks, but I trust my intuition to guide me more. &lt;em&gt;Allons-y!&lt;/em&gt;&lt;/p&gt;&#xA;&lt;p&gt;&lt;em&gt;imagine if i was able to read normally without getting restless/discomforted..... so much cs &amp;amp; ml learning is to be had&lt;/em&gt;&lt;/p&gt;&#xA;</content:encoded>
     </item>
   </channel>
 </rss>
