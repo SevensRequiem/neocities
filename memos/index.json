@@ -1,5 +1,11 @@
 [
   {
+    "id": 30,
+    "date": "2026-11-13T03:27:12Z",
+    "body": "like seriously, let me containerize every app, selinux everything, set custom namespaces, create network namespaces for apps, etc. i stg cs makes you a paranoid schizophrenic thinking every app and link is malicious. ive been researching hardening all my systems lately thanks to a phishing attempt on this domain's email",
+    "html": "<p>like seriously, let me containerize every app, selinux everything, set custom namespaces, create network namespaces for apps, etc. i stg cs makes you a paranoid schizophrenic thinking every app and link is malicious. ive been researching hardening all my systems lately thanks to a phishing attempt on this domain&#39;s email</p>\n"
+  },
+  {
     "id": 29,
     "date": "2026-11-13T03:23:54Z",
     "body": "stock android is GROSS. it just feels so insecure, even if im not a security expert, i still like to research hardening on linux for peace of mind.",
