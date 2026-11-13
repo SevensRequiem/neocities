@@ -1,0 +1,14 @@
+{
+  "id": 124,
+  "title": "random stuff",
+  "date": "2026-11-13T20:44:03Z",
+  "tags": [
+    "Life",
+    "Update"
+  ],
+  "author": "requiem",
+  "hex": "6af77693f8f9124b911d8ba1",
+  "quote": "",
+  "image": "image.webp",
+  "body": "not a complaining post i promise. i'm now building a preservation system for the entire debian + fedora source, linux source, various packages, various codelang sources, etc so i can rebuild them in case all the datacenters just blow up thanks to the supposed soon ww3. ill publicize it so anyone can also turn any drive/usb into an archive! its just bash and systemd right now, but i'm thinking about making it into rust so i can do more things and have windows compat.\n\n^ i do wanna build a cyberdeck with that archive included, but if i build a cyberdeck im going all out and designing my own PCB/SBC using snapdragon chips. MAYBE risc-v, i dont know yet. i can think about many ways to do it, how to enclose a pelican case in a metal layer and have a mil-spec connector/disconnect for emp/lightning protection, and then custom heat pipes connecting to a custom metal part of the case so heat dissipates. idk, i just have never ending ideas and no money to implement them. \n\nand if i had $1b, i'd actually improve the USA so much it'd be unrecognizable, there's so many un-optimized systems, even the infrastructure is sooo 1900s and everything new it seems goes to big cities and the coasts, and never the heartland. i'd redesign how roads themselves are built and maybe even include carbon absorption in/alongside them, so they last longer. id build civilian public transport infrastructure, both walking and train, everywhere. i'd incorporate moss/bio-crete everywhere alongside solar-panels where possible on every building. i'd design segregated power systems down to cities/county regions that are redundant down to analog so you can completely take the digital offline and still have it operate at peak"
+}

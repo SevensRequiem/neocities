@@ -7,6 +7,17 @@
     <description>requiem&#39;s weblog on self-taught development, side projects, mental health and healing.</description>
     <language>en</language>
     <item>
+      <title>random stuff</title>
+      <link>https://requiem.moe/blog/124-random-stuff/</link>
+      <guid>https://requiem.moe/blog/124-random-stuff/</guid>
+      <pubDate>Fri, 13 Nov 2026 20:44:03 +0000</pubDate>
+      <dc:creator>requiem</dc:creator>
+      <category>Life</category>
+      <category>Update</category>
+      <description>not a complaining post i promise. i&#39;m now building a preservation system for the entire debian + fedora source, linux source, various packages, various codelang sources, etc so i can rebuild them in case all the...</description>
+      <content:encoded>&lt;p&gt;not a complaining post i promise. i&amp;#39;m now building a preservation system for the entire debian + fedora source, linux source, various packages, various codelang sources, etc so i can rebuild them in case all the datacenters just blow up thanks to the supposed soon ww3. ill publicize it so anyone can also turn any drive/usb into an archive! its just bash and systemd right now, but i&amp;#39;m thinking about making it into rust so i can do more things and have windows compat.&lt;/p&gt;&#xA;&lt;p&gt;^ i do wanna build a cyberdeck with that archive included, but if i build a cyberdeck im going all out and designing my own PCB/SBC using snapdragon chips. MAYBE risc-v, i dont know yet. i can think about many ways to do it, how to enclose a pelican case in a metal layer and have a mil-spec connector/disconnect for emp/lightning protection, and then custom heat pipes connecting to a custom metal part of the case so heat dissipates. idk, i just have never ending ideas and no money to implement them.&lt;/p&gt;&#xA;&lt;p&gt;and if i had $1b, i&amp;#39;d actually improve the USA so much it&amp;#39;d be unrecognizable, there&amp;#39;s so many un-optimized systems, even the infrastructure is sooo 1900s and everything new it seems goes to big cities and the coasts, and never the heartland. i&amp;#39;d redesign how roads themselves are built and maybe even include carbon absorption in/alongside them, so they last longer. id build civilian public transport infrastructure, both walking and train, everywhere. i&amp;#39;d incorporate moss/bio-crete everywhere alongside solar-panels where possible on every building. i&amp;#39;d design segregated power systems down to cities/county regions that are redundant down to analog so you can completely take the digital offline and still have it operate at peak&lt;/p&gt;&#xA;</content:encoded>
+    </item>
+    <item>
       <title>Southern Klan</title>
       <link>https://requiem.moe/blog/123-southern-klan/</link>
       <guid>https://requiem.moe/blog/123-southern-klan/</guid>
@@ -213,19 +224,6 @@
       <category>Life</category>
       <description>Game development is pretty fun. I&#39;ve been working on a couple games for the better part of a year now. I don&#39;t really want to speak on the end goal; rather I&#39;d like to learn how to communicate better in technical stuff...</description>
       <content:encoded>&lt;p&gt;Game development is pretty fun. I&amp;#39;ve been working on a couple games for the better part of a year now. I don&amp;#39;t really want to speak on the end goal; rather I&amp;#39;d like to learn how to communicate better in technical stuff through this blog and my development!&lt;/p&gt;&#xA;&lt;p&gt;I&amp;#39;ve begun to work on the LoD after getting 400fps at 32k~ chunks rendered (64x64x12x2 chunks, y,up,down). I am hoping to keep the same efficiency in the LoD system which is designed to extend the view distance so the world looks infinite. It will form a sort of Fog of War around explored vs un-explored chunks.&lt;/p&gt;&#xA;&lt;p&gt;The noise system is fun too; I had made it interchangeable from cpu/gpu at runtime so older systems can benefit from GPU noise without having to rely on CPU SIMD which may not exist!&lt;/p&gt;&#xA;&lt;p&gt;As of posting, the latest dev video: &lt;a href=&#34;https://www.youtube.com/watch?v=DXO1SmcQUWc&#34; rel=&#34;noreferrer noopener&#34; target=&#34;_blank&#34;&gt;https://www.youtube.com/watch?v=DXO1SmcQUWc&lt;/a&gt;&lt;/p&gt;&#xA;</content:encoded>
-    </item>
-    <item>
-      <title>Inspirational Pain</title>
-      <link>https://requiem.moe/blog/104-inspirational-pain/</link>
-      <guid>https://requiem.moe/blog/104-inspirational-pain/</guid>
-      <pubDate>Sat, 17 Oct 2026 01:49:41 +0000</pubDate>
-      <dc:creator>requiem</dc:creator>
-      <category>Life</category>
-      <category>Mental Health</category>
-      <category>Update</category>
-      <category>Trauma</category>
-      <description>Thoughts about some grand post, grand musings, about familial pain come to mind, but it&#39;s not enough. Not for the pain sake, but I&#39;ve started to feed/transform pain into creativity. In these moments (like now), I feel...</description>
-      <content:encoded>&lt;p&gt;Thoughts about some grand post, grand musings, about familial pain come to mind, but it&amp;#39;s not enough. Not for the pain sake, but I&amp;#39;ve started to feed/transform pain into creativity. In these moments (like now), I feel warm and euphoric from my pain because I&amp;#39;m channeling it to be more hyperphantasia. Probably not the healthiest aspect, but it is comfortable.&lt;/p&gt;&#xA;&lt;p&gt;On things not said about my family; I never really had one. Not for the lack of wanting one or lack of trying, it&amp;#39;s just no one&amp;#39;s been there for me. It&amp;#39;s always just been how I&amp;#39;m a burden, inconvenience, or mentally ill (showing signs of ptsd) on both sides of my family ever since I was 6! Twenty years of ostrasization without an exit... I like to think that helped form my spirituality and the &amp;#34;lighter&amp;#34; side of my world view over the years which is still growing. Maybe it&amp;#39;s just a lust for life disguised as light. Haha!&lt;/p&gt;&#xA;&lt;p&gt;I don&amp;#39;t blame anyone or anything anymore unless it&amp;#39;s from my childhood. I&amp;#39;ve become too understanding of humans. Yea, I like to put myself outside of being human because I act differently &amp;amp; have always been treated as if I wasn&amp;#39;t one!&lt;/p&gt;&#xA;</content:encoded>
     </item>
   </channel>
 </rss>

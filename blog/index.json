@@ -1,5 +1,17 @@
 [
   {
+    "id": 124,
+    "dir": "124-random-stuff",
+    "title": "random stuff",
+    "date": "2026-11-13T20:44:03Z",
+    "tags": [
+      "Life",
+      "Update"
+    ],
+    "excerpt": "not a complaining post i promise. i'm now building a preservation system for the entire debian + fedora source, linux source, various packages, various codelang sources, etc so i can rebuild them in case all the...",
+    "image": "image.webp"
+  },
+  {
     "id": 123,
     "dir": "123-southern-klan",
     "title": "Southern Klan",
